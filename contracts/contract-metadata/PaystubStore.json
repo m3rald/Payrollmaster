@@ -1,0 +1,143 @@
+{
+  "contractAddress": "0x03292b1ba7e146dec1d055bde23efe8a442a3db8",
+  "network": "ARC-TESTNET",
+  "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
+  "contract_code_path": "/home/user/app/contracts/PaystubStore.sol",
+  "contract_compiled_code_path": "/home/user/app/contracts/out/PaystubStore.sol/PaystubStore.json",
+  "contract_network_and_links": {
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x03292b1ba7e146dec1d055bde23efe8a442a3db8"
+  },
+  "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x03292b1ba7e146dec1d055bde23efe8a442a3db8",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x03292b1ba7e146dec1d055bde23efe8a442a3db8",
+      "txHash": "0xe1bb6b887ac9076fd3369a05434b76ac136bbfdd88acbfb0ae1fb422b6b3bd07",
+      "deployedAt": "2026-09-24T07:10:19.790Z"
+    }
+  ],
+  "abi": [
+    {
+      "type": "function",
+      "name": "getViewTag",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "lineIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes4",
+          "internalType": "bytes4"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "paystubs",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "lineIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "destCommitment",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "amountCipher",
+          "type": "bytes",
+          "internalType": "bytes"
+        },
+        {
+          "name": "viewTag",
+          "type": "bytes4",
+          "internalType": "bytes4"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "store",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "lineIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "destCommitment",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "amountCipher",
+          "type": "bytes",
+          "internalType": "bytes"
+        },
+        {
+          "name": "viewTag",
+          "type": "bytes4",
+          "internalType": "bytes4"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "event",
+      "name": "PaystubStored",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "indexed": true,
+          "internalType": "string"
+        },
+        {
+          "name": "lineIndex",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "destCommitment",
+          "type": "bytes32",
+          "indexed": false,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "viewTag",
+          "type": "bytes4",
+          "indexed": false,
+          "internalType": "bytes4"
+        }
+      ],
+      "anonymous": false
+    }
+  ]
+}

@@ -1,0 +1,401 @@
+{
+  "contractAddress": "0x9ba157c1221ea791f3a4afd7653e9d221a50e331",
+  "network": "ARC-TESTNET",
+  "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
+  "contract_code_path": "/home/user/app/contracts/RunRegistry.sol",
+  "contract_compiled_code_path": "/home/user/app/contracts/out/RunRegistry.sol/RunRegistry.json",
+  "contract_network_and_links": {
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x9ba157c1221ea791f3a4afd7653e9d221a50e331"
+  },
+  "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x9ba157c1221ea791f3a4afd7653e9d221a50e331",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x9ba157c1221ea791f3a4afd7653e9d221a50e331",
+      "txHash": "0x1c3cad8a010d0e2e5889f7698b326f0e238b3993555384457121246cc7ac0842",
+      "deployedAt": "2026-09-24T07:31:39.107Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xa1881be8a3a6a38762b197db7be05a17b39bd8eb",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xa1881be8a3a6a38762b197db7be05a17b39bd8eb",
+      "txHash": "0xa149b42b27eca07d4b67a135fae63a78d0ce03f61764068f3c6b56b205ee90ca",
+      "deployedAt": "2026-09-24T07:10:32.323Z"
+    }
+  ],
+  "abi": [
+    {
+      "type": "constructor",
+      "inputs": [
+        {
+          "name": "_orgFactory",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "approveRun",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "checkerSig",
+          "type": "bytes",
+          "internalType": "bytes"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "claimLine",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "lineIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "dest",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "proof",
+          "type": "bytes32[]",
+          "internalType": "bytes32[]"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "claimed",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "lineIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "createRun",
+      "inputs": [
+        {
+          "name": "orgId",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "rosterRoot",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "totalAmount",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "executeRun",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "paid",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "held",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "orgFactory",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "runs",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "rosterRoot",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "totalAmount",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "approved",
+          "type": "bool",
+          "internalType": "bool"
+        },
+        {
+          "name": "executed",
+          "type": "bool",
+          "internalType": "bool"
+        },
+        {
+          "name": "checker",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "orgId",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "event",
+      "name": "LineClaimed",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "indexed": true,
+          "internalType": "string"
+        },
+        {
+          "name": "lineIndex",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "dest",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "RunApproved",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "indexed": true,
+          "internalType": "string"
+        },
+        {
+          "name": "checker",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "RunCreated",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "indexed": true,
+          "internalType": "string"
+        },
+        {
+          "name": "orgId",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        },
+        {
+          "name": "rosterRoot",
+          "type": "bytes32",
+          "indexed": false,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "totalAmount",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "RunExecuted",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "indexed": true,
+          "internalType": "string"
+        },
+        {
+          "name": "paid",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "held",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "txData",
+          "type": "bytes32",
+          "indexed": false,
+          "internalType": "bytes32"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "error",
+      "name": "AlreadyClaimed",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InsufficientVaultBalance",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InvalidDestination",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InvalidProof",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NotAuthorizedChecker",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NotAuthorizedMaker",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "OrgNotFound",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "RunAlreadyExecuted",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "RunAlreadyExists",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "RunNotApproved",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "RunNotFound",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "SafeERC20FailedOperation",
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address",
+          "internalType": "address"
+        }
+      ]
+    }
+  ]
+}
