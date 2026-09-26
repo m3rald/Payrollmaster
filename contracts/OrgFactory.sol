@@ -17,6 +17,7 @@ contract OrgFactory {
     event OrgCreated(string indexed orgId, address owner, address vault);
     event MakerSet(string indexed orgId, address maker);
     event CheckerSet(string indexed orgId, address checker);
+    event RegistrySet(address indexed oldRegistry, address indexed newRegistry);
 
     error OrgAlreadyExists();
     error InvalidOwner();
@@ -26,8 +27,11 @@ contract OrgFactory {
     error RegistryAlreadySet();
     error NotDeployer();
     error ZeroRegistry();
+    error ZeroUsdc();
+    error RegistryNotSet();
 
     constructor(address _usdc) {
+        if (_usdc == address(0)) revert ZeroUsdc();
         usdc = _usdc;
         deployer = msg.sender;
     }
@@ -37,6 +41,7 @@ contract OrgFactory {
         if (msg.sender != deployer) revert NotDeployer();
         if (registrySet) revert RegistryAlreadySet();
         if (_registry == address(0)) revert ZeroRegistry();
+        emit RegistrySet(address(0), _registry);
         registry = _registry;
         registrySet = true;
     }
@@ -44,7 +49,9 @@ contract OrgFactory {
     function createOrg(string calldata orgId, string calldata name, address owner) external returns (address vault) {
         name;
 
+        if (!registrySet) revert RegistryNotSet();
         if (owner == address(0)) revert InvalidOwner();
+        if (msg.sender != owner) revert NotOrgOwner();
         if (vaultOf[orgId] != address(0)) revert OrgAlreadyExists();
 
         Vault deployedVault = new Vault(usdc, orgId, owner, registry);

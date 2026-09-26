@@ -25,6 +25,10 @@ contract RunRegistry is ReentrancyGuard {
 
     mapping(string runId => Run) public runs;
     mapping(string runId => mapping(uint256 lineIndex => bool)) public claimed;
+    mapping(string runId => uint256) public executedAt;
+
+    /// @notice Org owner may reclaim residual after this many seconds post-execution.
+    uint256 public constant CLAIM_WINDOW = 90 days;
 
     address public orgFactory;
     address public immutable deployer;
@@ -53,6 +57,9 @@ contract RunRegistry is ReentrancyGuard {
     error AlreadyInitialized();
     error NotDeployer();
     error ZeroAmount();
+    error ZeroFactory();
+    error ClaimWindowOpen();
+    error NoResidual();
 
     /// @param _orgFactory Pass address(0) to bootstrap the circular dependency;
     ///                     call setOrgFactory once after OrgFactory is deployed.
@@ -66,7 +73,7 @@ contract RunRegistry is ReentrancyGuard {
     function setOrgFactory(address _orgFactory) external {
         if (msg.sender != deployer) revert NotDeployer();
         if (orgFactory != address(0)) revert AlreadyInitialized();
-        require(_orgFactory != address(0), "factory required");
+        if (_orgFactory == address(0)) revert ZeroFactory();
         orgFactory = _orgFactory;
         emit OrgFactorySet(_orgFactory);
     }
@@ -137,6 +144,7 @@ contract RunRegistry is ReentrancyGuard {
 
         run.executed = true;
         run.heldAmount = run.totalAmount;
+        executedAt[runId] = block.timestamp;
         Vault(vaultAddress).pull(address(this), run.totalAmount);
 
         pulled = run.totalAmount;
@@ -171,5 +179,26 @@ contract RunRegistry is ReentrancyGuard {
         IERC20(token).safeTransfer(dest, amount);
 
         emit LineClaimed(runId, lineIndex, dest, amount);
+    }
+
+    /// @notice After the 90-day claim window, the org owner may recover any unclaimed residual.
+    ///         This prevents funds from being permanently locked when workers never claim.
+    function reclaimResidual(string calldata runId) external nonReentrant {
+        Run storage run = runs[runId];
+        if (bytes(run.orgId).length == 0) revert RunNotFound();
+        if (!run.executed) revert RunNotExecuted();
+        if (block.timestamp < executedAt[runId] + CLAIM_WINDOW) revert ClaimWindowOpen();
+        if (run.heldAmount == 0) revert NoResidual();
+
+        address owner = OrgFactory(orgFactory).ownerOf(run.orgId);
+        if (msg.sender != owner) revert NotAuthorizedMaker();
+
+        uint256 residual = run.heldAmount;
+        run.heldAmount = 0;
+
+        address token = Vault(OrgFactory(orgFactory).vaultOf(run.orgId)).usdc();
+        IERC20(token).safeTransfer(owner, residual);
+
+        emit LineClaimed(runId, type(uint256).max, owner, residual);
     }
 }

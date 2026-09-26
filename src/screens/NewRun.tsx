@@ -21,6 +21,7 @@ export function NewRun({ org, employees, loading, onCreateRun, onNav }: NewRunPr
   const [label, setLabel] = useState('')
   const [lines, setLines] = useState<LineEntry[]>([{ employeeId: '', amountDollars: '' }])
   const [created, setCreated] = useState<PayrollRun | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   function addLine() { setLines(prev => [...prev, { employeeId: '', amountDollars: '' }]) }
   function removeLine(i: number) { setLines(prev => prev.filter((_, j) => j !== i)) }
@@ -34,8 +35,13 @@ export function NewRun({ org, employees, loading, onCreateRun, onNav }: NewRunPr
 
   async function handleCreate() {
     if (!canCreate) return
-    const run = await onCreateRun(label.trim(), validLines)
-    setCreated(run)
+    setError(null)
+    try {
+      const run = await onCreateRun(label.trim(), validLines)
+      setCreated(run)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to create run — check roster wallet addresses and try again.')
+    }
   }
 
   if (!org) {
@@ -135,6 +141,12 @@ export function NewRun({ org, employees, loading, onCreateRun, onNav }: NewRunPr
             <span className="tabular-nums" style={{ color: 'var(--subtle)' }}>{validLines.length}</span>
           </div>
         </InnerCard>
+      )}
+
+      {error && (
+        <div className="rounded-xl px-4 py-3 text-sm font-medium" style={{ background: 'var(--danger)22', color: 'var(--danger)', border: '1px solid var(--danger)44' }}>
+          {error}
+        </div>
       )}
 
       <Button size="lg" onClick={() => { void handleCreate() }} loading={loading} disabled={!canCreate}>

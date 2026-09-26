@@ -71,15 +71,24 @@ export function buildMerkleRootWithProofs(runId: string, lines: PayrollLine[]): 
   return { root, proofs }
 }
 
-/** Encode a ClaimProof as a URL-safe base64 string for deep links. */
+/** Encode a ClaimProof as a URL-safe base64 string for deep links.
+ *  Uses base64url (RFC 4648 §5): replaces +→- /→_ and strips trailing =
+ *  so the value is safe to embed in a query string without encodeURIComponent. */
 export function encodeClaimProof(cp: ClaimProof): string {
   return btoa(JSON.stringify(cp))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
 }
 
 /** Decode a ClaimProof from a URL-safe base64 string. */
 export function decodeClaimProof(encoded: string): ClaimProof | null {
-  try { return JSON.parse(atob(encoded)) as ClaimProof }
-  catch { return null }
+  try {
+    // Accept both standard base64 and base64url
+    const b64 = encoded.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = b64 + '=='.slice(0, (4 - b64.length % 4) % 4)
+    return JSON.parse(atob(padded)) as ClaimProof
+  } catch { return null }
 }
 
 export function buildMerkleRoot(runId: string, lines: PayrollLine[]): `0x${string}` {

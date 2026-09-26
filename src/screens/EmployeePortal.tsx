@@ -43,6 +43,7 @@ export function EmployeePortal() {
 
   const [entries, setEntries] = useState<ClaimEntry[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [txSteps, setTxSteps] = useState<Record<string, TxStep>>({})
   const [txErrors, setTxErrors] = useState<Record<string, string>>({})
 
@@ -111,14 +112,23 @@ export function EmployeePortal() {
       }
 
       setEntries(results)
-    } catch { /* silent */ }
+      setLoadError(null)
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : 'Failed to load payroll data — check your connection and try again.')
+    }
   }, [address, urlClaim?.runId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!isConnected || !address) return
     let cancelled = false
     setLoading(true)
-    loadEntries().then(() => { if (!cancelled) setLoading(false) }).catch(() => { if (!cancelled) setLoading(false) })
+    setLoadError(null)
+    loadEntries().then(() => { if (!cancelled) setLoading(false) }).catch((err: unknown) => {
+      if (!cancelled) {
+        setLoading(false)
+        setLoadError(err instanceof Error ? err.message : 'Failed to load payroll data.')
+      }
+    })
     return () => { cancelled = true }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, address])
@@ -198,7 +208,23 @@ export function EmployeePortal() {
         </InnerCard>
       )}
 
-      {!loading && entries.length === 0 && (
+      {!loading && loadError && (
+        <InnerCard>
+          <div className="flex items-start gap-2">
+            <Coins className="size-4 mt-0.5 shrink-0" style={{ color: 'var(--error, #e53e3e)' }} />
+            <div>
+              <p className="text-sm font-medium" style={{ color: 'var(--ink)' }}>Failed to load payroll data</p>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{loadError}</p>
+              <button onClick={() => { void loadEntries() }}
+                className="text-xs font-medium mt-2" style={{ color: 'var(--accent)' }}>
+                Try again
+              </button>
+            </div>
+          </div>
+        </InnerCard>
+      )}
+
+      {!loading && !loadError && entries.length === 0 && (
         <InnerCard className="text-center py-8">
           <Coins className="size-8 mx-auto mb-3" style={{ color: 'var(--border-strong)' }} />
           <p className="text-sm font-medium" style={{ color: 'var(--ink)' }}>No payroll found</p>
@@ -233,6 +259,13 @@ export function EmployeePortal() {
               <span className="text-base font-medium" style={{ color: 'var(--subtle)' }}>USDC</span>
             </div>
 
+            {!entry.claimed && (
+              <div className="flex items-start gap-2 mb-2 px-2 py-1.5 rounded-lg text-xs"
+                style={{ background: 'var(--surface-muted)', color: 'var(--muted)' }}>
+                <Coins className="size-3.5 mt-0.5 shrink-0" style={{ color: 'var(--warning)' }} />
+                <span>You need a small USDC balance on Arc Testnet to pay gas for this claim.</span>
+              </div>
+            )}
             {entry.claimed ? (
               <div className="flex items-center gap-2" style={{ color: 'var(--success)' }}>
                 <CheckCircle2 className="size-4" />

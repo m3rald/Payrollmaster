@@ -34,11 +34,6 @@ export default function App() {
   const role = useOrgRole(activeOrg?.id)
 
   // Navigation is always allowed — role-gating only disables action buttons inside screens.
-  // Previously this blocked nav clicks for 'none'/'loading' roles which made tabs unclickable.
-  function canSee(_s: Screen): boolean {
-    return true
-  }
-
   const isGuide = screen === 'guide'
   return (
     <Shell screen={screen} onNav={(s) => setScreen(s)} orgName={activeOrg?.name} role={role}>

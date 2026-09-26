@@ -148,8 +148,9 @@ export function usePayroll() {
     const org = loadOrgs().find(o => o.id === activeOrgId)
     const allowed = org ? (org.maker ?? org.owner) : undefined
     if (allowed && address && address.toLowerCase() !== allowed.toLowerCase()) {
-      toast.error(`Wrong wallet — connect ${allowed.slice(0, 6)}...${allowed.slice(-4)} (the ${org?.maker ? 'maker' : 'owner'}) to publish the roster root.`)
-      return
+      const msg = `Wrong wallet — connect ${allowed.slice(0, 6)}...${allowed.slice(-4)} (the ${org?.maker ? 'maker' : 'owner'}) to publish the roster root.`
+      toast.error(msg)
+      throw new Error(msg)
     }
     setLoading(true)
     try {
@@ -159,6 +160,7 @@ export function usePayroll() {
       toast.success('Roster root published on-chain')
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Publish failed')
+      throw e  // rethrow so Approve screen doesn't mark step done on failure
     } finally { setLoading(false) }
   }, [activeOrgId, address])
 

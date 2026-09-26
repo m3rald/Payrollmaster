@@ -17,7 +17,7 @@ const pub = createPublicClient({ chain: arcTestnet, transport: http() })
 
 export function useOrgRole(orgId: string | null | undefined): OrgRole {
   const { address } = useAccount()
-  const [role, setRole] = useState<OrgRole>('loading')
+  const [role, setRole] = useState<OrgRole>('none')
 
   const ready = Boolean(orgId && address && ORG_FACTORY)
 

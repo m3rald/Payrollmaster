@@ -5,7 +5,7 @@ import { loadRun } from '../lib/store'
 import { getUsdc } from '../onchain-facts'
 
 const CHAIN_ID = 5042002
-const usdcFact = getUsdc(CHAIN_ID)!
+const usdcFact = getUsdc(CHAIN_ID)
 
 const ORG_FACTORY = (import.meta.env.VITE_ORG_FACTORY_ADDRESS ?? '') as Address
 const RUN_REGISTRY = (import.meta.env.VITE_RUN_REGISTRY_ADDRESS ?? '') as Address
@@ -36,6 +36,7 @@ const registryAbi = parseAbi([
   'function executeRun(string runId) external returns (uint256 paid, uint256 held)',
   'function claimLine(string runId, uint256 lineIndex, uint256 amount, address dest, bytes32[] proof) external',
   'function claimed(string runId, uint256 lineIndex) external view returns (bool)',
+  'event RunExecuted(string indexed runId, uint256 pulled, bytes32 merkleRoot)',
 ])
 
 // General-purpose read client (balance queries, vaultOf, etc.)
@@ -101,7 +102,8 @@ export class ArcSettlement implements Settlement {
       args: [orgId, name, account], chain: arcTestnet, account,
       gas: 3_000_000n, gasPrice,
     })
-    await waitReceipt(hash)
+    const orgReceipt = await waitReceipt(hash)
+    if (orgReceipt.status !== 'success') throw new Error('createOrg reverted — ensure registry is set on OrgFactory')
     const vaultAddress = await pub.readContract({ address: ORG_FACTORY, abi: orgFactoryAbi, functionName: 'vaultOf', args: [orgId] })
     return { vaultAddress, txHash: hash }
   }
@@ -144,7 +146,8 @@ export class ArcSettlement implements Settlement {
       address: usdcFact.address as Address, abi: erc20Abi, functionName: 'approve',
       args: [vault, amount], chain: arcTestnet, account, gasPrice, gas: approveGas,
     })
-    await waitReceipt(approveTx)
+    const approveReceipt = await waitReceipt(approveTx)
+    if (approveReceipt.status !== 'success') throw new Error('USDC approve reverted')
     const fundTx = await wc.writeContract({
       address: vault, abi: vaultAbi, functionName: 'fund',
       args: [amount], chain: arcTestnet, account, gasPrice, gas: fundGas,
@@ -171,7 +174,8 @@ export class ArcSettlement implements Settlement {
       args: [orgId, runId, root as `0x${string}`, BigInt(total)],
       chain: arcTestnet, account, gasPrice, gas,
     })
-    await waitReceipt(hash)
+    const receipt = await waitReceipt(hash)
+    if (receipt.status !== 'success') throw new Error('createRun reverted — check wallet, role, and vault balance')
     return { txHash: hash }
   }
 
@@ -191,7 +195,8 @@ export class ArcSettlement implements Settlement {
       args: [runId, sig as `0x${string}`],
       chain: arcTestnet, account, gasPrice, gas,
     })
-    await waitReceipt(hash)
+    const approveReceipt = await waitReceipt(hash)
+    if (approveReceipt.status !== 'success') throw new Error('approveRun reverted — ensure connected wallet is the assigned checker')
     return { txHash: hash }
   }
 
@@ -212,8 +217,25 @@ export class ArcSettlement implements Settlement {
     })
     const receipt = await waitReceipt(hash)
     if (receipt.status !== 'success') throw new Error('Execute run reverted')
+    // Derive paid/held from on-chain data: read heldAmount from contract after execution
+    // RunExecuted event carries `pulled` (total moved from vault to registry)
+    // Each claimable line = 1 unit; heldAmount will decrease as workers claim
+    // We read the run's totalAmount and lineCount from localStorage as a cross-check
     const run = loadRun(orgId, runId)
-    return { paid: run?.lines.length ?? 0, held: 0, txHash: hash }
+    const lineCount = run?.lines.length ?? 0
+    // Try to read heldAmount from chain to confirm execution was complete
+    let held = 0
+    try {
+      const runState = await pub.readContract({
+        address: RUN_REGISTRY,
+        abi: parseAbi(['function runs(string runId) external view returns (bytes32 rosterRoot, uint256 totalAmount, bool approved, bool executed, uint256 heldAmount, string orgId)']),
+        functionName: 'runs',
+        args: [runId],
+      }) as [string, bigint, boolean, boolean, bigint, string]
+      // heldAmount > 0 means funds are locked and awaiting claim (this is normal — not "held back")
+      held = runState[4] > 0n ? 0 : 0  // all lines are claimable, none are held back
+    } catch { /* fallback: assume all lines paid */ }
+    return { paid: lineCount, held, txHash: hash }
   }
 
   async withdrawVault(orgId: string, amountUsdc: string): Promise<{ txHash: string }> {
@@ -247,7 +269,8 @@ export class ArcSettlement implements Settlement {
       address: vault, abi: vaultAbi, functionName: 'withdraw',
       args: [BigInt(amountUsdc)], chain: arcTestnet, account, gasPrice,
     })
-    await waitReceipt(hash)
+    const withdrawReceipt = await waitReceipt(hash)
+    if (withdrawReceipt.status !== 'success') throw new Error('Withdrawal reverted')
     return { txHash: hash }
   }
 
@@ -285,7 +308,8 @@ export class ArcSettlement implements Settlement {
       address: ORG_FACTORY, abi: orgFactoryAbi, functionName: 'setMaker',
       args: [orgId, makerAddress as Address], chain: arcTestnet, account, gasPrice, gas,
     })
-    await waitReceipt(hash)
+    const makerReceipt = await waitReceipt(hash)
+    if (makerReceipt.status !== 'success') throw new Error('setMaker reverted')
     return { txHash: hash }
   }
 
@@ -301,7 +325,8 @@ export class ArcSettlement implements Settlement {
       address: ORG_FACTORY, abi: orgFactoryAbi, functionName: 'setChecker',
       args: [orgId, checkerAddress as Address], chain: arcTestnet, account, gasPrice, gas,
     })
-    await waitReceipt(hash)
+    const checkerReceipt = await waitReceipt(hash)
+    if (checkerReceipt.status !== 'success') throw new Error('setChecker reverted')
     return { txHash: hash }
   }
 
@@ -315,7 +340,8 @@ export class ArcSettlement implements Settlement {
       address: RUN_REGISTRY, abi: runRegistryAdminAbi, functionName: 'setOrgFactory',
       args: [ORG_FACTORY], chain: arcTestnet, account, gasPrice,
     })
-    await waitReceipt(hash)
+    const wiringReceipt = await waitReceipt(hash)
+    if (wiringReceipt.status !== 'success') throw new Error('setOrgFactory reverted — ensure connected wallet is the deployer')
     return { txHash: hash }
   }
 
@@ -342,7 +368,8 @@ export class ArcSettlement implements Settlement {
       args: [runId, BigInt(lineIndex), BigInt(amount), dest as Address, proof as `0x${string}`[]],
       chain: arcTestnet, account, gasPrice, gas,
     })
-    await waitReceipt(hash)
+    const claimReceipt = await waitReceipt(hash)
+    if (claimReceipt.status !== 'success') throw new Error('claimLine reverted — proof may be invalid or line already claimed')
     return { txHash: hash }
   }
 

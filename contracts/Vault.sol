@@ -7,10 +7,10 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 contract Vault {
     using SafeERC20 for IERC20;
 
-    address public usdc;
+    address public immutable usdc;
     string public orgId;
-    address public owner;
-    address public registry;
+    address public immutable owner;
+    address public immutable registry;
 
     event Funded(uint256 amount, uint256 newBalance);
     event Pulled(address to, uint256 amount);
@@ -20,8 +20,10 @@ contract Vault {
     error NotOwner();
     error InvalidRecipient();
     error ZeroAmount();
+    error ZeroAddress();
 
     constructor(address _usdc, string memory _orgId, address _owner, address _registry) {
+        if (_usdc == address(0) || _owner == address(0) || _registry == address(0)) revert ZeroAddress();
         usdc = _usdc;
         orgId = _orgId;
         owner = _owner;

@@ -15,10 +15,12 @@ contract PaystubStore {
 
     error NotRegistry();
     error AlreadyStored();
+    error ZeroRegistry();
 
     event PaystubStored(string indexed runId, uint256 indexed lineIndex, bytes32 destCommitment, bytes4 viewTag);
 
     constructor(address _registry) {
+        if (_registry == address(0)) revert ZeroRegistry();
         registry = _registry;
     }
 

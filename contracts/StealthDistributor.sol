@@ -2,8 +2,8 @@
 pragma solidity ^0.8.20;
 
 contract StealthDistributor {
-    address public registry;
-    address public paystubStore;
+    address public immutable registry;
+    address public immutable paystubStore;
 
     event Paid(
         string indexed runId,
@@ -14,8 +14,10 @@ contract StealthDistributor {
     );
 
     error NotRegistry();
+    error ZeroAddress();
 
     constructor(address _registry, address _paystubStore) {
+        if (_registry == address(0) || _paystubStore == address(0)) revert ZeroAddress();
         registry = _registry;
         paystubStore = _paystubStore;
     }
