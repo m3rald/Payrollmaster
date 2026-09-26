@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useChainId, useSwitchChain } from 'wagmi'
+import { useChainId } from 'wagmi'
 import { Shell } from './components/layout/Shell'
 import { ChainGuard } from './components/ui/ChainGuard'
 import { Home } from './screens/Home'
@@ -10,28 +10,43 @@ import { EmployeePortal } from './screens/EmployeePortal'
 import { OrgSettings } from './screens/OrgSettings'
 import { AuditorDesk } from './screens/AuditorDesk'
 import { usePayroll } from './hooks/usePayroll'
+import { useOrgRole } from './hooks/useOrgRole'
 
-export type Screen = 'home' | 'roster' | 'new-run' | 'approve' | 'employee-portal' | 'settings' | 'auditor'
+export type Screen = 'home' | 'roster' | 'new-run' | 'approve' | 'employee-portal' | 'settings' | 'auditor' | 'guide'
 
 const ARC_TESTNET_CHAIN_ID = 5042002
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('home')
+  const [screen, setScreen] = useState<Screen>(() => {
+    const params = new URLSearchParams(window.location.search)
+    const tab = params.get('tab')
+    if (tab === 'employee-portal') return 'employee-portal'
+    return 'home'
+  })
   const chainId = useChainId()
-  const { switchChain } = useSwitchChain()
   const {
     orgs, activeOrg, employees, runs, loading,
-    selectOrg, createOrg, addEmployee, deleteEmployee,
+    selectOrg, createOrg, retryOrgRegistration, addEmployee, deleteEmployee,
     createRun, publishRosterRoot, attestSanctions, approveRun, executeRun,
-    fundVault, setMaker, setChecker,
+    fundVault, withdrawVault, setMaker, setChecker,
   } = usePayroll()
 
+  const role = useOrgRole(activeOrg?.id)
+
+  // Navigation is always allowed — role-gating only disables action buttons inside screens.
+  // Previously this blocked nav clicks for 'none'/'loading' roles which made tabs unclickable.
+  function canSee(_s: Screen): boolean {
+    return true
+  }
+
+  const isGuide = screen === 'guide'
   return (
-    <Shell screen={screen} onNav={setScreen} orgName={activeOrg?.name}>
+    <Shell screen={screen} onNav={(s) => setScreen(s)} orgName={activeOrg?.name} role={role}>
+      {!isGuide && <div className="px-4 py-6 pb-24 lg:pb-6 lg:px-8 max-w-4xl w-full mx-auto flex-1">
       <ChainGuard
         chainId={chainId}
         targetChainId={ARC_TESTNET_CHAIN_ID}
-        onSwitch={() => { void switchChain({ chainId: ARC_TESTNET_CHAIN_ID }) }}
+        onSwitch={() => {}}
       />
       {screen === 'home' && (
         <Home
@@ -43,6 +58,8 @@ export default function App() {
           onSelectOrg={selectOrg}
           onNav={setScreen}
           onFundVault={fundVault}
+          onWithdrawVault={withdrawVault}
+          onRetryRegistration={retryOrgRegistration}
         />
       )}
       {screen === 'roster' && (
@@ -85,6 +102,16 @@ export default function App() {
         <AuditorDesk org={activeOrg} runs={runs} />
       )}
       {screen === 'employee-portal' && <EmployeePortal />}
+      </div>}
+      {screen === 'guide' && (
+        <div style={{ height: 'calc(100vh - 56px)', display: 'flex', flexDirection: 'column' }}>
+          <iframe
+            src="/user-guide.html"
+            title="User Guide"
+            style={{ flex: 1, border: 'none', width: '100%' }}
+          />
+        </div>
+      )}
     </Shell>
   )
 }

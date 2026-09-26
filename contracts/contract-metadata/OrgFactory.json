@@ -1,13 +1,104 @@
 {
-  "contractAddress": "0x588aff9e646c88f4ad26f4fd961b8f15157a2bc7",
+  "contractAddress": "0x2fb1aa6bd50138989171f3de85c0539fdc035bd2",
   "network": "ARC-TESTNET",
   "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
   "contract_code_path": "/home/user/app/contracts/OrgFactory.sol",
   "contract_compiled_code_path": "/home/user/app/contracts/out/OrgFactory.sol/OrgFactory.json",
   "contract_network_and_links": {
-    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x588aff9e646c88f4ad26f4fd961b8f15157a2bc7"
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x2fb1aa6bd50138989171f3de85c0539fdc035bd2"
   },
   "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x2fb1aa6bd50138989171f3de85c0539fdc035bd2",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x2fb1aa6bd50138989171f3de85c0539fdc035bd2",
+      "txHash": "0xb7b4527ea690ce56151ea6bb6ea51df5b280ad8e0ed6b03b44dcfeb77881d904",
+      "deployedAt": "2026-09-26T14:15:12.829Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x494b3966396d98bc2fb45c687b35b472cac779fb",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x494b3966396d98bc2fb45c687b35b472cac779fb",
+      "txHash": "0x452e02ba2a84d7c77f9502091e8b6f9ca6d689ef1a36d4eb2a4da711d1d93a60",
+      "deployedAt": "2026-09-26T14:13:32.803Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xcd0604e4f6c452bfa9a4c51ee5fbf619002b7d96",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xcd0604e4f6c452bfa9a4c51ee5fbf619002b7d96",
+      "txHash": "0x908742fda2ba7766868fefe7329498cfdc3f78ea5874eff66402369f18ee0e76",
+      "deployedAt": "2026-09-26T14:12:23.975Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x03afd2fd9be773ac674181cb449d8dc1e50bc3c1",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x03afd2fd9be773ac674181cb449d8dc1e50bc3c1",
+      "txHash": "0x0cb36b7d929917e156ff0c2db312870695a000907752ec7cc3708202c379eb0e",
+      "deployedAt": "2026-09-26T10:36:46.038Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xc5c59ddc287d469e31865e1cd4ba26b06e4cbaf5",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xc5c59ddc287d469e31865e1cd4ba26b06e4cbaf5",
+      "txHash": "0x5493fd9b48d490fef26f2b4d39df06d07b864ba2095d81f5a769c4232e19a990",
+      "deployedAt": "2026-09-25T12:59:48.089Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xc5c59ddc287d469e31865e1cd4ba26b06e4cbaf5",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xc5c59ddc287d469e31865e1cd4ba26b06e4cbaf5",
+      "txHash": "0x5493fd9b48d490fef26f2b4d39df06d07b864ba2095d81f5a769c4232e19a990",
+      "deployedAt": "2026-09-25T12:53:39.816Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x36d013871accf14018b25df0fb24e2551fe251ec",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x36d013871accf14018b25df0fb24e2551fe251ec",
+      "txHash": "0xa3be8ffad06e4854fbf93c912c0e8ac25f89e7879a697e524208a453d679b24d",
+      "deployedAt": "2026-09-25T10:14:48.527Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xfe80f843587c1a05bcb5ac56cf0f659d0aef87e5",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xfe80f843587c1a05bcb5ac56cf0f659d0aef87e5",
+      "txHash": "0x6d65221caaf229a352a12a1a5c02a2820a8262f0870e384e09be1f23ce1b3fcd",
+      "deployedAt": "2026-09-25T10:14:08.492Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xd2c25263156a6eb172dc459af03599202d894f20",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xd2c25263156a6eb172dc459af03599202d894f20",
+      "txHash": "0xf3eeb333b03e3fa33be7583e2121fbbac69d95d4dab6a77676f397f332b7df79",
+      "deployedAt": "2026-09-24T11:57:12.087Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x36d013871accf14018b25df0fb24e2551fe251ec",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x36d013871accf14018b25df0fb24e2551fe251ec",
+      "txHash": "0xa3be8ffad06e4854fbf93c912c0e8ac25f89e7879a697e524208a453d679b24d",
+      "deployedAt": "2026-09-24T11:56:30.934Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xfe80f843587c1a05bcb5ac56cf0f659d0aef87e5",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xfe80f843587c1a05bcb5ac56cf0f659d0aef87e5",
+      "txHash": "0x6d65221caaf229a352a12a1a5c02a2820a8262f0870e384e09be1f23ce1b3fcd",
+      "deployedAt": "2026-09-24T11:55:41.518Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x6850837079f744832b746f442252f447e4e1a223",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x6850837079f744832b746f442252f447e4e1a223",
+      "txHash": "0x57cee899236ccf5b63646b4bdf84524c7143e4f4eae5124848bfd7c3c75db687",
+      "deployedAt": "2026-09-24T08:15:14.579Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x66bf85dd43a57e00ecccc8dc79de74f83b97447b",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x66bf85dd43a57e00ecccc8dc79de74f83b97447b",
+      "txHash": "0xe127f7f903c5dddd36ee281d6879fbcbcc7d20a5405dfa91703b932245449dca",
+      "deployedAt": "2026-09-24T08:09:52.990Z"
+    },
     {
       "chain": "Arc Testnet",
       "address": "0x588aff9e646c88f4ad26f4fd961b8f15157a2bc7",

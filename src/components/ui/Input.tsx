@@ -12,7 +12,7 @@ export function Input({ label, hint, className, ...props }: InputProps) {
       <input
         className={cn(
           'w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none transition-all',
-          'placeholder:text-slate-400 focus:ring-2',
+          'focus:ring-2',
           className
         )}
         style={{

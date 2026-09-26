@@ -18,16 +18,22 @@ Any org funds a vault, a maker prepares a run, a checker approves it, and the ow
 - Token: USDC at 0x3600000000000000000000000000000000000000 (6 decimals)
 - Privacy: app-layer AES-GCM per-line encryption; only merkle root stored on-chain
 
-## Deployed Contracts (Arc Testnet)
+## Deployed Contracts (Arc Testnet) — 2026-09-26 (latest)
 
 | Contract | Address | Explorer |
 |---|---|---|
-| OrgFactory | 0x588aff9e646c88f4ad26f4fd961b8f15157a2bc7 | https://explorer.testnet.arc.io/address/0x588aff9e646c88f4ad26f4fd961b8f15157a2bc7 |
-| RunRegistry | 0x9ba157c1221ea791f3a4afd7653e9d221a50e331 | https://explorer.testnet.arc.io/address/0x9ba157c1221ea791f3a4afd7653e9d221a50e331 |
-| PaystubStore | 0x03292b1ba7e146dec1d055bde23efe8a442a3db8 | https://explorer.testnet.arc.io/address/0x03292b1ba7e146dec1d055bde23efe8a442a3db8 |
-| StealthDistributor | 0xaca90c502ff9284d6ef1d320176bc7985089fe83 | https://explorer.testnet.arc.io/address/0xaca90c502ff9284d6ef1d320176bc7985089fe83 |
+| OrgFactory | 0x2fb1aa6bd50138989171f3de85c0539fdc035bd2 | https://explorer.testnet.arc.io/address/0x2fb1aa6bd50138989171f3de85c0539fdc035bd2 |
+| RunRegistry | 0x39035c0050de4c13e019218473dcdb5516c9b506 | https://explorer.testnet.arc.io/address/0x39035c0050de4c13e019218473dcdb5516c9b506 |
+| PaystubStore | 0x9d66ba788763175ce279bdb42a663d05a1a2d2fb | https://explorer.testnet.arc.io/address/0x9d66ba788763175ce279bdb42a663d05a1a2d2fb |
+| StealthDistributor | 0x5f89105d439900b406ebcfd4c74cf596b874a0ce | https://explorer.testnet.arc.io/address/0x5f89105d439900b406ebcfd4c74cf596b874a0ce |
 
-NOTE: RunRegistry was deployed with orgFactory=0x0. Call `setOrgFactory(0x588aff9e646c88f4ad26f4fd961b8f15157a2bc7)` from the deployer wallet once to link it.
+WIRING STATUS (2026-09-26 after 10 deploys):
+- OrgFactory.registry() = 0x39035c00 (RunRegistry) ✓ — Vault bakes correct registry
+- RunRegistry.orgFactory() = 0x494b3966 (prev OrgFactory) ✗ — createRun still broken
+- PaystubStore.registry() = 0x9d66ba78 ✓
+- StealthDistributor ✓
+TOMORROW: Deploy OrgFactory(usdc_only) → get address → Deploy RunRegistry(OrgFactory) → call OrgFactory.setRegistry(RunRegistry)
+OrgFactory now has setRegistry(address) one-time setter — circular dep permanently broken.
 
 ## Key Files
 

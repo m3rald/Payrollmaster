@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Payroll Master — Project Documentation &amp; Source Code</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; color: #1a1a2e; background: #fff; line-height: 1.6; }
+  .page { max-width: 960px; margin: 0 auto; padding: 40px 48px; }
+
+  h1 { font-size: 28px; font-weight: 800; color: #122d45; letter-spacing: -0.03em; margin-bottom: 4px; }
+  h2 { font-size: 17px; font-weight: 700; color: #122d45; margin: 32px 0 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
+  h3 { font-size: 13px; font-weight: 700; color: #334155; margin: 20px 0 6px; }
+  p { margin: 6px 0; color: #334155; }
+
+  .subtitle { color: #6b6580; font-size: 14px; margin-bottom: 32px; }
+  .badge { display: inline-block; background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; margin-right: 6px; margin-bottom: 4px; }
+  .badge.green { background: #dcfce7; color: #166534; }
+  .badge.orange { background: #fef3c7; color: #92400e; }
+  .badge.red { background: #fee2e2; color: #991b1b; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+  th { background: #f8fafc; text-align: left; padding: 7px 10px; font-weight: 700; border: 1px solid #e2e8f0; color: #475569; }
+  td { padding: 6px 10px; border: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; color: #1e3a5f; }
+
+  .step { display: flex; gap: 12px; margin: 8px 0; align-items: flex-start; }
+  .step-num { min-width: 24px; height: 24px; background: #122d45; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 1px; }
+  .step-body { flex: 1; }
+  .step-title { font-weight: 600; color: #122d45; }
+  .step-sub { color: #64748b; font-size: 12px; }
+
+  .finding { background: #fff7ed; border-left: 4px solid #f97316; padding: 10px 14px; border-radius: 4px; margin: 8px 0; }
+  .finding.fixed { background: #f0fdf4; border-color: #22c55e; }
+  .finding-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+  pre { background: #0f172a; color: #e2e8f0; font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; line-height: 1.55; padding: 16px 20px; border-radius: 8px; overflow-x: auto; margin: 8px 0 16px; white-space: pre; page-break-inside: avoid; }
+  .file-header { background: #1e293b; color: #94a3b8; font-family: 'Consolas', monospace; font-size: 11px; padding: 6px 20px; border-radius: 8px 8px 0 0; margin-bottom: -8px; }
+
+  .kw { color: #93c5fd; }
+  .cm { color: #6b7280; font-style: italic; }
+  .str { color: #86efac; }
+  .fn { color: #fde68a; }
+  .ty { color: #c4b5fd; }
+  .num { color: #fb923c; }
+
+  .download-btn { display: inline-block; background: #122d45; color: #fff; padding: 10px 24px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; margin: 16px 0 8px; text-decoration: none; }
+  .download-btn:hover { background: #1061a6; }
+
+  .addr { font-family: 'Consolas', monospace; font-size: 11px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #1e3a5f; word-break: break-all; }
+
+  .toc { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 20px; margin: 16px 0 32px; }
+  .toc a { color: #1061a6; text-decoration: none; font-size: 12px; }
+  .toc li { margin: 3px 0; }
+
+  @media print {
+    .no-print { display: none !important; }
+    body { font-size: 11px; }
+    pre { font-size: 10px; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 14px; margin-top: 24px; }
+    .page { padding: 20px 24px; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+  <div>
+    <h1>Payroll Master</h1>
+    <p class="subtitle">Onchain multi-tenant payroll console &mdash; USDC on Arc Testnet &mdash; app-layer privacy</p>
+  </div>
+  <button class="download-btn no-print" onclick="window.print()">&#8595; Download PDF</button>
+</div>
+
+<div>
+  <span class="badge">Arc Testnet</span>
+  <span class="badge">Chain ID 5042002</span>
+  <span class="badge green">USDC gas</span>
+  <span class="badge">Solidity 0.8.28</span>
+  <span class="badge">React 18 + wagmi v2</span>
+  <span class="badge orange">AES-GCM privacy</span>
+</div>
+
+<!-- TOC -->
+<div class="toc no-print">
+  <strong style="font-size:12px;color:#475569">Contents</strong>
+  <ol style="margin-top:8px;padding-left:20px">
+    <li><a href="#overview">Project Overview</a></li>
+    <li><a href="#roles">Roles &amp; Permissions</a></li>
+    <li><a href="#lifecycle">Payroll Lifecycle (7 Steps)</a></li>
+    <li><a href="#contracts">Deployed Contracts</a></li>
+    <li><a href="#network">Network &amp; Token Config</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#privacy">Privacy Architecture</a></li>
+    <li><a href="#audit">Security / Audit Findings</a></li>
+    <li><a href="#source-contracts">Source: Smart Contracts</a></li>
+    <li><a href="#source-frontend">Source: Frontend (Settlement + Crypto)</a></li>
+  </ol>
+</div>
+
+<!-- OVERVIEW -->
+<h2 id="overview">1. Project Overview</h2>
+<p>Payroll Master is a multi-tenant onchain payroll console where any organisation can fund a USDC vault, prepare a payroll run, route it through a two-step maker/checker approval, and execute it — paying workers directly in USDC on Arc Testnet.</p>
+<p>Salary amounts are encrypted client-side with AES-GCM (PBKDF2-derived key per employee per run). Only a Merkle root is stored on-chain; individual amounts are never visible on the public explorer. Workers claim their own line using a Merkle proof.</p>
+
+<table>
+  <tr><th>Property</th><th>Value</th></tr>
+  <tr><td>Live app</td><td><span class="mono">https://payrollmaster.netlify.app</span></td></tr>
+  <tr><td>Chain</td><td>Arc Testnet (Chain ID 5042002, Paris EVM)</td></tr>
+  <tr><td>Native gas token</td><td>USDC (same pool as ERC-20 USDC — unique Arc property)</td></tr>
+  <tr><td>USDC address</td><td><span class="addr">0x3600000000000000000000000000000000000000</span> (6 decimals)</td></tr>
+  <tr><td>Explorer</td><td><span class="mono">https://explorer.testnet.arc.io</span></td></tr>
+  <tr><td>Frontend</td><td>React 18, Vite, TypeScript, Tailwind CSS, ConnectKit + wagmi v2, viem</td></tr>
+  <tr><td>Contracts</td><td>Solidity 0.8.28, Foundry, OpenZeppelin 5</td></tr>
+  <tr><td>Privacy layer</td><td>AES-GCM 256 per-line, PBKDF2-SHA-256 key derivation, stealth destination commitments</td></tr>
+  <tr><td>Supported wallets</td><td>MetaMask, OKX Wallet, WalletConnect (any EVM wallet)</td></tr>
+</table>
+
+<!-- ROLES -->
+<h2 id="roles">2. Roles &amp; Permissions</h2>
+<table>
+  <tr><th>Role</th><th>Who</th><th>What they can do</th><th>Contract enforced?</th></tr>
+  <tr><td><strong>Owner</strong></td><td>Org creator wallet</td><td>Create org, fund/withdraw vault, assign maker &amp; checker, execute run</td><td>Yes — OrgFactory.ownerOf</td></tr>
+  <tr><td><strong>Maker</strong></td><td>Set by owner (optional, defaults to owner)</td><td>Prepare payroll run, publish Merkle roster root</td><td>Yes — OrgFactory.makerOf + RunRegistry.createRun guard</td></tr>
+  <tr><td><strong>Checker</strong></td><td>Set by owner (required for approval)</td><td>Approve a run on-chain</td><td>Yes — OrgFactory.checkerOf + RunRegistry.approveRun guard</td></tr>
+  <tr><td><strong>Employee</strong></td><td>Worker wallet address</td><td>Claim their USDC line using a Merkle proof</td><td>Yes — RunRegistry.claimLine verifies proof</td></tr>
+</table>
+
+<!-- LIFECYCLE -->
+<h2 id="lifecycle">3. Payroll Lifecycle (7 Steps)</h2>
+<div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Create Org</div><div class="step-sub">Owner calls <span class="mono">OrgFactory.createOrg(orgId, name, owner)</span>. Deploys a fresh Vault contract. Vault address stored on-chain.</div></div></div>
+<div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Fund Vault</div><div class="step-sub">Owner calls <span class="mono">USDC.approve(vault, amount)</span> then <span class="mono">Vault.fund(amount)</span>. USDC held in the vault until a run executes.</div></div></div>
+<div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Prepare Run</div><div class="step-sub">Maker builds the roster: each line has an AES-GCM encrypted amount, a stealth destination commitment, and a 4-byte view tag. A Merkle root is built client-side from these leaves.</div></div></div>
+<div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Publish Roster Root</div><div class="step-sub">Maker calls <span class="mono">RunRegistry.createRun(orgId, runId, rosterRoot, totalAmount)</span>. Run enters <em>roster_published</em> state. Amounts remain hidden.</div></div></div>
+<div class="step"><div class="step-num">5</div><div class="step-body"><div class="step-title">Checker Approval</div><div class="step-sub">Checker signs a message locally, then calls <span class="mono">RunRegistry.approveRun(runId, sig)</span> on-chain. Sets <span class="mono">run.approved = true</span>. Without this tx, executeRun reverts.</div></div></div>
+<div class="step"><div class="step-num">6</div><div class="step-body"><div class="step-title">Execute Run</div><div class="step-sub">Owner calls <span class="mono">RunRegistry.executeRun(runId)</span>. Checks approval, verifies vault balance, calls <span class="mono">Vault.pull(registry, totalAmount)</span>, marks run executed.</div></div></div>
+<div class="step"><div class="step-num">7</div><div class="step-body"><div class="step-title">Employee Claim</div><div class="step-sub">Each worker calls <span class="mono">RunRegistry.claimLine(runId, lineIndex, amount, dest, proof)</span>. Merkle proof is verified on-chain. USDC transferred to <span class="mono">dest</span>.</div></div></div>
+
+<!-- CONTRACTS -->
+<h2 id="contracts">4. Deployed Contracts (Arc Testnet)</h2>
+<table>
+  <tr><th>Contract</th><th>Address</th><th>Status</th><th>Explorer</th></tr>
+  <tr>
+    <td><strong>OrgFactory</strong></td>
+    <td><span class="addr">0x36d013871accf14018b25df0fb24e2551fe251ec</span></td>
+    <td><span class="badge green">Verified</span></td>
+    <td><span class="mono">explorer.testnet.arc.io/address/0x36d013...</span></td>
+  </tr>
+  <tr>
+    <td><strong>RunRegistry</strong></td>
+    <td><span class="addr">0x2067159744e4240407c088851928354993aa9843</span></td>
+    <td><span class="badge green">Verified</span></td>
+    <td><span class="mono">explorer.testnet.arc.io/address/0x206715...</span></td>
+  </tr>
+  <tr>
+    <td><strong>PaystubStore</strong></td>
+    <td><span class="addr">0x03292b1ba7e146dec1d055bde23efe8a442a3db8</span></td>
+    <td><span class="badge green">Verified</span></td>
+    <td><span class="mono">explorer.testnet.arc.io/address/0x03292b...</span></td>
+  </tr>
+  <tr>
+    <td><strong>StealthDistributor</strong></td>
+    <td><span class="addr">0xaca90c502ff9284d6ef1d320176bc7985089fe83</span></td>
+    <td><span class="badge green">Verified</span></td>
+    <td><span class="mono">explorer.testnet.arc.io/address/0xaca90c...</span></td>
+  </tr>
+  <tr>
+    <td><strong>USDC</strong></td>
+    <td><span class="addr">0x3600000000000000000000000000000000000000</span></td>
+    <td><span class="badge">Native</span></td>
+    <td>Arc Testnet canonical USDC</td>
+  </tr>
+</table>
+
+<h3>Contract Wiring</h3>
+<table>
+  <tr><th>Check</th><th>Expected</th><th>Status</th></tr>
+  <tr><td>OrgFactory.registry()</td><td>RunRegistry 0x2067159...</td><td><span class="badge green">✓ Correct</span></td></tr>
+  <tr><td>RunRegistry.orgFactory()</td><td>OrgFactory 0x36d013...</td><td><span class="badge orange">⚠ Pending — points at intermediate OrgFactory</span></td></tr>
+  <tr><td>OrgFactory.usdc()</td><td>0x360000...</td><td><span class="badge green">✓ Correct</span></td></tr>
+</table>
+<p style="color:#92400e;font-size:12px;margin-top:4px">Note: One final RunRegistry deploy is pending (deploy limit). Until resolved, <code>createRun</code> will fail for orgs created through the current OrgFactory. All other functions work correctly.</p>
+
+<!-- NETWORK -->
+<h2 id="network">5. Network &amp; Token Config</h2>
+<table>
+  <tr><th>Field</th><th>Value</th></tr>
+  <tr><td>Network name</td><td>Arc Testnet</td></tr>
+  <tr><td>Chain ID</td><td>5042002 (0x4CEFB2)</td></tr>
+  <tr><td>RPC URL</td><td><span class="mono">https://rpc.testnet.arc.io</span></td></tr>
+  <tr><td>Currency symbol</td><td>USDC</td></tr>
+  <tr><td>Currency decimals</td><td>18 (native view) / 6 (ERC-20 view)</td></tr>
+  <tr><td>Block explorer</td><td><span class="mono">https://explorer.testnet.arc.io</span></td></tr>
+  <tr><td>EVM version</td><td>Paris</td></tr>
+</table>
+
+<!-- ARCHITECTURE -->
+<h2 id="architecture">6. Architecture</h2>
+<h3>Contract layer</h3>
+<table>
+  <tr><th>Contract</th><th>Responsibility</th></tr>
+  <tr><td>OrgFactory</td><td>Multi-tenant registry. Deploys one Vault per org. Stores owner, maker, checker per orgId.</td></tr>
+  <tr><td>Vault</td><td>Per-org USDC custody. Accepts fund(), exposes pull() to registry only, owner can withdraw().</td></tr>
+  <tr><td>RunRegistry</td><td>Full run lifecycle: create → approve → execute → claimLine. Merkle proof verification on claim.</td></tr>
+  <tr><td>PaystubStore</td><td>Immutable encrypted paystub storage. Only RunRegistry can write (access-controlled). Employees read their own line by view tag.</td></tr>
+  <tr><td>StealthDistributor</td><td>Emits privacy events with ciphered amounts + stealth commitments. Only RunRegistry can emit.</td></tr>
+</table>
+
+<h3>Frontend layer</h3>
+<table>
+  <tr><th>File</th><th>Responsibility</th></tr>
+  <tr><td>src/settlement/arc.ts</td><td>ArcSettlement adapter — all chain calls, gas price fetching, receipt polling, org discovery</td></tr>
+  <tr><td>src/hooks/usePayroll.ts</td><td>React state — business logic, localStorage sync, wallet guards</td></tr>
+  <tr><td>src/lib/crypto.ts</td><td>AES-GCM encryption/decryption, PBKDF2 key derivation, stealth destination commitment</td></tr>
+  <tr><td>src/lib/merkle.ts</td><td>Client-side Merkle root builder (keccak256 leaves)</td></tr>
+  <tr><td>src/lib/store.ts</td><td>localStorage persistence for orgs, employees, runs, secrets</td></tr>
+  <tr><td>src/screens/</td><td>Home, Roster, NewRun, Approve, EmployeePortal, OrgSettings, AuditorDesk</td></tr>
+</table>
+
+<!-- PRIVACY -->
+<h2 id="privacy">7. Privacy Architecture</h2>
+<p>Individual salary amounts are never stored or transmitted in plaintext. The scheme:</p>
+<table>
+  <tr><th>Step</th><th>Detail</th></tr>
+  <tr><td>Key derivation</td><td>PBKDF2-SHA-256, 50,000 iterations, salt = <span class="mono">runId:employeeId</span>, from a 32-byte random org secret stored only in localStorage</td></tr>
+  <tr><td>Encryption</td><td>AES-GCM 256-bit, random 12-byte IV prepended to ciphertext</td></tr>
+  <tr><td>On-chain storage</td><td>Only the Merkle root (hash of all lines) and per-line view tags are on-chain</td></tr>
+  <tr><td>View tag</td><td>First 4 bytes of the ciphertext — lets an employee quickly scan all runs to find their own line without decrypting everything</td></tr>
+  <tr><td>Destination commitment</td><td>SHA-256 of <span class="mono">stealthDest:employeeId</span> — masks the true recipient address</td></tr>
+  <tr><td>Merkle leaf</td><td>keccak256(lineIndex ++ amount ++ dest) — used for on-chain claimLine proof verification</td></tr>
+</table>
+<p style="color:#64748b;font-size:12px;margin-top:6px">The org secret is critical: losing it makes all salary data unrecoverable. It is never sent to any server.</p>
+
+<!-- AUDIT -->
+<h2 id="audit">8. Security / Audit Findings</h2>
+
+<div class="finding fixed">
+  <div class="finding-label" style="color:#166534">&#10003; Fixed — Critical</div>
+  <strong>PaystubStore: missing access control on store()</strong><br/>
+  <span style="font-size:12px">Original contract had no authorization check on <code>store()</code> — any address could overwrite any employee's encrypted paystub. Fixed by adding <code>immutable address registry</code>, <code>if (msg.sender != registry) revert NotRegistry()</code>, and <code>if (paystubs[runId][lineIndex].destCommitment != bytes32(0)) revert AlreadyStored()</code>. Paystubs are now immutable once written and only writable by RunRegistry.</span>
+</div>
+
+<div class="finding">
+  <div class="finding-label" style="color:#c2410c">&#9888; Known — Wiring</div>
+  <strong>RunRegistry.orgFactory() mismatch</strong><br/>
+  <span style="font-size:12px">Circular constructor dependency between RunRegistry and OrgFactory caused one deploy to reference an intermediate OrgFactory address. Pending one final RunRegistry redeploy to resolve. Until then, <code>createRun</code> reverts with <code>OrgNotFound</code> for new orgs. All other functions are unaffected.</span>
+</div>
+
+<div class="finding">
+  <div class="finding-label" style="color:#c2410c">&#9888; Note — Merkle leaf encoding</div>
+  <strong>Leaf uses (lineIndex, amount, dest) — not employee identity</strong><br/>
+  <span style="font-size:12px">The on-chain Merkle leaf in RunRegistry is <code>keccak256(lineIndex ++ amount ++ dest)</code>. The frontend builds the same leaf. However, if <code>dest</code> is reused across runs (e.g. a fixed employee wallet address), a proof from a past run could theoretically be replayed against a future run with the same leaf. Mitigation: include <code>runId</code> in the leaf hash, or enforce single-use destinations.</span>
+</div>
+
+<div class="finding">
+  <div class="finding-label" style="color:#c2410c">&#9888; Note — approveRun accepts any sig bytes</div>
+  <strong>RunRegistry.approveRun ignores the checkerSig argument</strong><br/>
+  <span style="font-size:12px"><code>approveRun(runId, checkerSig)</code> stores <code>checkerSig</code> nowhere and does not verify it on-chain — authorization is solely by <code>msg.sender == checkerOf(orgId)</code>. The sig parameter exists for audit-trail purposes (event log). This is intentional but worth documenting: the on-chain security model relies entirely on the wallet check, not cryptographic signature verification.</span>
+</div>
+
+<div class="finding">
+  <div class="finding-label" style="color:#c2410c">&#9888; Note — Vault.withdraw uses amount == 0 check as NotOwner proxy</div>
+  <strong>InvalidRecipient error reused for zero-amount guard</strong><br/>
+  <span style="font-size:12px"><code>Vault.withdraw</code> reverts with <code>InvalidRecipient</code> when <code>amount == 0</code>. This reuses an unrelated error type. Should be a dedicated <code>ZeroAmount</code> error for clarity in off-chain tooling.</span>
+</div>
+
+<div class="finding">
+  <div class="finding-label" style="color:#c2410c">&#9888; Note — No reentrancy guard on claimLine</div>
+  <strong>RunRegistry.claimLine performs external call without reentrancy protection</strong><br/>
+  <span style="font-size:12px"><code>claimLine</code> calls <code>IERC20.safeTransfer</code> after setting <code>claimed[runId][lineIndex] = true</code> (checks-effects-interactions order is correct), but there is no <code>ReentrancyGuard</code>. Since USDC is not a reentrant token, this is low risk in practice, but adding OZ <code>ReentrancyGuard</code> is recommended for defence in depth.</span>
+</div>
+
+<!-- SOURCE: CONTRACTS -->
+<h2 id="source-contracts">9. Source Code — Smart Contracts</h2>
+<p style="color:#64748b;font-size:12px;margin-bottom:12px">All contracts: Solidity 0.8.28, MIT licence, compiled with Foundry (Paris EVM target).</p>
+
+<h3>contracts/OrgFactory.sol</h3>
+<div class="file-header">contracts/OrgFactory.sol</div>
+<pre>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import {Vault} from "./Vault.sol";
+
+contract OrgFactory {
+    mapping(string orgId => address vault) public vaultOf;
+    mapping(string orgId => address owner) public ownerOf;
+    mapping(string orgId => address maker) public makerOf;
+    mapping(string orgId => address checker) public checkerOf;
+
+    address public immutable usdc;
+    address public immutable registry;
+
+    event OrgCreated(string indexed orgId, address owner, address vault);
+    event MakerSet(string indexed orgId, address maker);
+    event CheckerSet(string indexed orgId, address checker);
+
+    error OrgAlreadyExists();
+    error InvalidOwner();
+    error OrgNotFound();
+    error NotOrgOwner();
+
+    constructor(address _usdc, address _registry) {
+        usdc = _usdc;
+        registry = _registry;
+    }
+
+    function createOrg(string calldata orgId, string calldata name, address owner)
+        external returns (address vault)
+    {
+        name; // unused — reserved for future on-chain name storage
+
+        if (owner == address(0)) revert InvalidOwner();
+        if (vaultOf[orgId] != address(0)) revert OrgAlreadyExists();
+
+        Vault deployedVault = new Vault(usdc, orgId, owner, registry);
+        vault = address(deployedVault);
+
+        vaultOf[orgId] = vault;
+        ownerOf[orgId] = owner;
+
+        emit OrgCreated(orgId, owner, vault);
+    }
+
+    function setMaker(string calldata orgId, address maker) external {
+        address orgOwner = ownerOf[orgId];
+        if (orgOwner == address(0)) revert OrgNotFound();
+        if (msg.sender != orgOwner) revert NotOrgOwner();
+        makerOf[orgId] = maker;
+        emit MakerSet(orgId, maker);
+    }
+
+    function setChecker(string calldata orgId, address checker) external {
+        address orgOwner = ownerOf[orgId];
+        if (orgOwner == address(0)) revert OrgNotFound();
+        if (msg.sender != orgOwner) revert NotOrgOwner();
+        checkerOf[orgId] = checker;
+        emit CheckerSet(orgId, checker);
+    }
+}</pre>
+
+<h3>contracts/Vault.sol</h3>
+<div class="file-header">contracts/Vault.sol</div>
+<pre>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
+contract Vault {
+    using SafeERC20 for IERC20;
+
+    address public usdc;
+    string  public orgId;
+    address public owner;
+    address public registry;
+
+    event Funded(uint256 amount, uint256 newBalance);
+    event Pulled(address to, uint256 amount);
+    event Withdrawn(address to, uint256 amount);
+
+    error NotRegistry();
+    error NotOwner();
+    error InvalidRecipient();
+
+    constructor(address _usdc, string memory _orgId, address _owner, address _registry) {
+        usdc     = _usdc;
+        orgId    = _orgId;
+        owner    = _owner;
+        registry = _registry;
+    }
+
+    /// @notice Anyone may top up the vault (org members expected).
+    function fund(uint256 amount) external {
+        IERC20(usdc).safeTransferFrom(msg.sender, address(this), amount);
+        emit Funded(amount, IERC20(usdc).balanceOf(address(this)));
+    }
+
+    /// @notice Only RunRegistry may pull funds (called during executeRun).
+    function pull(address to, uint256 amount) external {
+        if (msg.sender != registry) revert NotRegistry();
+        if (to == address(0)) revert InvalidRecipient();
+        IERC20(usdc).safeTransfer(to, amount);
+        emit Pulled(to, amount);
+    }
+
+    /// @notice Owner can withdraw idle USDC at any time.
+    function withdraw(uint256 amount) external {
+        if (msg.sender != owner) revert NotOwner();
+        if (amount == 0) revert InvalidRecipient(); // TODO: use ZeroAmount error
+        IERC20(usdc).safeTransfer(owner, amount);
+        emit Withdrawn(owner, amount);
+    }
+
+    function balance() external view returns (uint256) {
+        return IERC20(usdc).balanceOf(address(this));
+    }
+}</pre>
+
+<h3>contracts/RunRegistry.sol</h3>
+<div class="file-header">contracts/RunRegistry.sol</div>
+<pre>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import {OrgFactory} from "./OrgFactory.sol";
+import {Vault} from "./Vault.sol";
+
+contract RunRegistry {
+    using SafeERC20 for IERC20;
+
+    struct Run {
+        bytes32 rosterRoot;
+        uint256 totalAmount;
+        bool    approved;
+        bool    executed;
+        address checker;
+        string  orgId;
+    }
+
+    mapping(string runId => Run)                                    public runs;
+    mapping(string runId => mapping(uint256 lineIndex => bool))     public claimed;
+
+    address public orgFactory;
+    address public immutable deployer;
+
+    event RunCreated(string indexed runId, string orgId, bytes32 rosterRoot, uint256 totalAmount);
+    event RunApproved(string indexed runId, address checker);
+    event RunExecuted(string indexed runId, uint256 paid, uint256 held, bytes32 txData);
+    event LineClaimed(string indexed runId, uint256 lineIndex, address dest, uint256 amount);
+    event OrgFactorySet(address factory);
+
+    error RunAlreadyExists();
+    error RunNotFound();
+    error OrgNotFound();
+    error NotAuthorizedMaker();
+    error NotAuthorizedChecker();
+    error RunNotApproved();
+    error RunAlreadyExecuted();
+    error InsufficientVaultBalance();
+    error AlreadyClaimed();
+    error InvalidProof();
+    error InvalidDestination();
+    error AlreadyInitialized();
+    error NotDeployer();
+
+    /// @param _orgFactory Pass address(0) to break circular dep; call setOrgFactory once after.
+    constructor(address _orgFactory) {
+        deployer   = msg.sender;
+        orgFactory = _orgFactory;
+    }
+
+    /// @notice One-time setter. Only original deployer, only while orgFactory == address(0).
+    function setOrgFactory(address _orgFactory) external {
+        if (msg.sender != deployer) revert NotDeployer();
+        if (orgFactory != address(0)) revert AlreadyInitialized();
+        require(_orgFactory != address(0), "factory required");
+        orgFactory = _orgFactory;
+        emit OrgFactorySet(_orgFactory);
+    }
+
+    function createRun(
+        string calldata orgId,
+        string calldata runId,
+        bytes32 rosterRoot,
+        uint256 totalAmount
+    ) external {
+        if (bytes(runs[runId].orgId).length != 0) revert RunAlreadyExists();
+
+        OrgFactory factory = OrgFactory(orgFactory);
+        address vault  = factory.vaultOf(orgId);
+        if (vault == address(0)) revert OrgNotFound();
+
+        address maker  = factory.makerOf(orgId);
+        address owner_ = factory.ownerOf(orgId);
+        bool authorized = maker == address(0)
+            ? (msg.sender == owner_)
+            : (msg.sender == maker);
+        if (!authorized) revert NotAuthorizedMaker();
+
+        runs[runId] = Run({
+            rosterRoot:  rosterRoot,
+            totalAmount: totalAmount,
+            approved:    false,
+            executed:    false,
+            checker:     address(0),
+            orgId:       orgId
+        });
+        emit RunCreated(runId, orgId, rosterRoot, totalAmount);
+    }
+
+    function approveRun(string calldata runId, bytes calldata checkerSig) external {
+        checkerSig; // stored off-chain for audit trail; on-chain auth is by msg.sender
+        Run storage run = runs[runId];
+        if (bytes(run.orgId).length == 0) revert RunNotFound();
+
+        address expectedChecker = OrgFactory(orgFactory).checkerOf(run.orgId);
+        if (msg.sender != expectedChecker) revert NotAuthorizedChecker();
+
+        run.approved = true;
+        run.checker  = msg.sender;
+        emit RunApproved(runId, msg.sender);
+    }
+
+    function executeRun(string calldata runId)
+        external returns (uint256 paid, uint256 held)
+    {
+        Run storage run = runs[runId];
+        if (bytes(run.orgId).length == 0) revert RunNotFound();
+        if (!run.approved)  revert RunNotApproved();
+        if (run.executed)   revert RunAlreadyExecuted();
+
+        address vaultAddress = OrgFactory(orgFactory).vaultOf(run.orgId);
+        if (vaultAddress == address(0)) revert OrgNotFound();
+
+        uint256 vaultBal = Vault(vaultAddress).balance();
+        if (vaultBal &lt; run.totalAmount) revert InsufficientVaultBalance();
+
+        run.executed = true;
+        Vault(vaultAddress).pull(address(this), run.totalAmount);
+
+        paid = 1; held = 0;
+        emit RunExecuted(runId, paid, held, bytes32(0));
+    }
+
+    function claimLine(
+        string   calldata runId,
+        uint256           lineIndex,
+        uint256           amount,
+        address           dest,
+        bytes32[] calldata proof
+    ) external {
+        Run storage run = runs[runId];
+        if (bytes(run.orgId).length == 0) revert RunNotFound();
+        if (!run.executed)                revert RunNotApproved();
+        if (claimed[runId][lineIndex])    revert AlreadyClaimed();
+        if (dest == address(0))           revert InvalidDestination();
+
+        bytes32 leaf = keccak256(abi.encodePacked(lineIndex, amount, dest));
+        if (!MerkleProof.verify(proof, run.rosterRoot, leaf)) revert InvalidProof();
+
+        claimed[runId][lineIndex] = true;
+        address token = Vault(OrgFactory(orgFactory).vaultOf(run.orgId)).usdc();
+        IERC20(token).safeTransfer(dest, amount);
+        emit LineClaimed(runId, lineIndex, dest, amount);
+    }
+}</pre>
+
+<h3>contracts/PaystubStore.sol</h3>
+<div class="file-header">contracts/PaystubStore.sol</div>
+<pre>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+/// @title PaystubStore
+/// @notice Immutable encrypted paystub storage. Only RunRegistry (set at deploy) may write.
+///         Each (runId, lineIndex) slot is write-once to prevent tampering.
+contract PaystubStore {
+    struct Paystub {
+        bytes32 destCommitment;
+        bytes   amountCipher;
+        bytes4  viewTag;
+    }
+
+    mapping(string runId => mapping(uint256 lineIndex => Paystub)) public paystubs;
+
+    address public immutable registry;
+
+    error NotRegistry();
+    error AlreadyStored();
+
+    event PaystubStored(
+        string  indexed runId,
+        uint256 indexed lineIndex,
+        bytes32 destCommitment,
+        bytes4  viewTag
+    );
+
+    constructor(address _registry) {
+        registry = _registry;
+    }
+
+    function store(
+        string  calldata runId,
+        uint256          lineIndex,
+        bytes32          destCommitment,
+        bytes   calldata amountCipher,
+        bytes4           viewTag
+    ) external {
+        if (msg.sender != registry) revert NotRegistry();
+        if (paystubs[runId][lineIndex].destCommitment != bytes32(0)) revert AlreadyStored();
+
+        paystubs[runId][lineIndex] = Paystub({
+            destCommitment: destCommitment,
+            amountCipher:   amountCipher,
+            viewTag:        viewTag
+        });
+        emit PaystubStored(runId, lineIndex, destCommitment, viewTag);
+    }
+
+    function getViewTag(string calldata runId, uint256 lineIndex)
+        external view returns (bytes4)
+    {
+        return paystubs[runId][lineIndex].viewTag;
+    }
+}</pre>
+
+<h3>contracts/StealthDistributor.sol</h3>
+<div class="file-header">contracts/StealthDistributor.sol</div>
+<pre>// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+/// @title StealthDistributor
+/// @notice Emits privacy events with encrypted amounts and stealth commitments.
+///         Only the RunRegistry may call emitPaid.
+contract StealthDistributor {
+    address public registry;
+    address public paystubStore;
+
+    event Paid(
+        string  indexed runId,
+        uint256 indexed lineIndex,
+        bytes32 indexed destCommitment,
+        bytes           amountCipher,
+        bytes4          viewTag
+    );
+
+    error NotRegistry();
+
+    constructor(address _registry, address _paystubStore) {
+        registry     = _registry;
+        paystubStore = _paystubStore;
+    }
+
+    function emitPaid(
+        string  calldata runId,
+        uint256          lineIndex,
+        bytes32          destCommitment,
+        bytes   calldata amountCipher,
+        bytes4           viewTag
+    ) external {
+        if (msg.sender != registry) revert NotRegistry();
+        emit Paid(runId, lineIndex, destCommitment, amountCipher, viewTag);
+    }
+}</pre>
+
+<!-- SOURCE: FRONTEND -->
+<h2 id="source-frontend">10. Source Code — Frontend (Key Files)</h2>
+
+<h3>src/settlement/arc.ts — Chain adapter (all on-chain calls)</h3>
+<div class="file-header">src/settlement/arc.ts</div>
+<pre>import { createPublicClient, http, erc20Abi, parseAbi, type Address, type WalletClient } from 'viem'
+import { arcTestnet } from 'viem/chains'
+import type { Settlement, FundResult, ExecuteRunResult } from './types'
+import { loadRun } from '../lib/store'
+import { getUsdc } from '../onchain-facts'
+
+const CHAIN_ID = 5042002
+const usdcFact = getUsdc(CHAIN_ID)!
+
+const ORG_FACTORY = (import.meta.env.VITE_ORG_FACTORY_ADDRESS ?? '') as Address
+const RUN_REGISTRY = (import.meta.env.VITE_RUN_REGISTRY_ADDRESS ?? '') as Address
+
+const orgFactoryAbi = parseAbi([
+  'function createOrg(string orgId, string name, address owner) external returns (address vault)',
+  'function vaultOf(string orgId) external view returns (address)',
+  'function setMaker(string orgId, address maker) external',
+  'function setChecker(string orgId, address checker) external',
+])
+const vaultAbi = parseAbi([
+  'function fund(uint256 amount) external',
+  'function withdraw(uint256 amount) external',
+  'function balance() external view returns (uint256)',
+])
+const registryAbi = parseAbi([
+  'function createRun(string orgId, string runId, bytes32 rosterRoot, uint256 totalAmount) external',
+  'function approveRun(string runId, bytes checkerSig) external',
+  'function executeRun(string runId) external returns (uint256 paid, uint256 held)',
+])
+const orgFactoryEventsAbi = parseAbi([
+  'event OrgCreated(string indexed orgId, address owner, address vault)',
+])
+
+// General-purpose read client
+const pub = createPublicClient({ chain: arcTestnet, transport: http() })
+
+// Dedicated receipt-polling client — isolated so gas-price timeouts never cancel receipt waits
+const receiptClient = createPublicClient({
+  chain: arcTestnet,
+  transport: http(undefined, { timeout: 120_000 }),
+})
+
+// Fetch gas price with short timeout + one retry, fallback to 30 gwei
+async function arcGasPrice(): Promise&lt;bigint&gt; {
+  for (let i = 0; i &lt; 2; i++) {
+    try {
+      const c = createPublicClient({ chain: arcTestnet, transport: http(undefined, { timeout: 5_000 }) })
+      const gp = await c.getGasPrice()
+      return (gp * 120n) / 100n  // +20% headroom
+    } catch { /* retry */ }
+  }
+  return 30_000_000_000n  // 30 gwei fallback
+}
+
+async function waitReceipt(hash: `0x${string}`) {
+  return receiptClient.waitForTransactionReceipt({ hash, timeout: 120_000 })
+}
+
+export class ArcSettlement implements Settlement {
+  private wc: WalletClient | null = null
+  setWalletClient(c: WalletClient) { this.wc = c }
+  private w() { if (!this.wc) throw new Error('Wallet not connected'); return this.wc }
+  private check() {
+    if (!ORG_FACTORY || !RUN_REGISTRY)
+      throw new Error('Contracts not deployed — set VITE_ORG_FACTORY_ADDRESS + VITE_RUN_REGISTRY_ADDRESS in .env')
+  }
+
+  async registerOrg(orgId: string, name: string) {
+    this.check()
+    const wc = this.w()
+    const [account] = await wc.getAddresses()
+    const gasPrice = await arcGasPrice()
+    const hash = await wc.writeContract({
+      address: ORG_FACTORY, abi: orgFactoryAbi, functionName: 'createOrg',
+      args: [orgId, name, account], chain: arcTestnet, account,
+      gas: 3_000_000n, gasPrice,
+    })
+    await waitReceipt(hash)
+    const vaultAddress = await pub.readContract({
+      address: ORG_FACTORY, abi: orgFactoryAbi, functionName: 'vaultOf', args: [orgId]
+    })
+    return { vaultAddress, txHash: hash }
+  }
+
+  async fund(orgId: string, amountUsdc: string): Promise&lt;FundResult&gt; {
+    this.check()
+    const wc = this.w()
+    const [account] = await wc.getAddresses()
+    const gasPrice = await arcGasPrice()
+    const vault = await pub.readContract({
+      address: ORG_FACTORY, abi: orgFactoryAbi, functionName: 'vaultOf', args: [orgId]
+    })
+    const amount = BigInt(amountUsdc)
+    // Step 1: approve
+    const approveTx = await wc.writeContract({
+      address: usdcFact.address as Address, abi: erc20Abi, functionName: 'approve',
+      args: [vault, amount], chain: arcTestnet, account, gasPrice,
+    })
+    await waitReceipt(approveTx)
+    // Step 2: fund
+    const fundTx = await wc.writeContract({
+      address: vault, abi: vaultAbi, functionName: 'fund',
+      args: [amount], chain: arcTestnet, account, gasPrice,
+    })
+    const receipt = await waitReceipt(fundTx)
+    if (receipt.status !== 'success') throw new Error('Fund tx reverted')
+    const bal = await pub.readContract({ address: vault, abi: vaultAbi, functionName: 'balance' })
+    return { txHash: fundTx, vaultBalance: bal.toString() }
+  }
+
+  async publishRosterRoot(runId: string, orgId: string, root: string, total: string) {
+    this.check()
+    const wc = this.w()
+    const [account] = await wc.getAddresses()
+    const gasPrice = await arcGasPrice()
+    const hash = await wc.writeContract({
+      address: RUN_REGISTRY, abi: registryAbi, functionName: 'createRun',
+      args: [orgId, runId, root as `0x${string}`, BigInt(total)],
+      chain: arcTestnet, account, gasPrice,
+    })
+    await waitReceipt(hash)
+    return { txHash: hash }
+  }
+
+  async approveRun(runId: string, sig: string) {
+    this.check()
+    const wc = this.w()
+    const [account] = await wc.getAddresses()
+    const gasPrice = await arcGasPrice()
+    const hash = await wc.writeContract({
+      address: RUN_REGISTRY, abi: registryAbi, functionName: 'approveRun',
+      args: [runId, sig as `0x${string}`],
+      chain: arcTestnet, account, gasPrice,
+    })
+    await waitReceipt(hash)
+    return { txHash: hash }
+  }
+
+  async executeRun(runId: string, orgId: string): Promise&lt;ExecuteRunResult&gt; {
+    this.check()
+    const wc = this.w()
+    const [account] = await wc.getAddresses()
+    const gasPrice = await arcGasPrice()
+    const hash = await wc.writeContract({
+      address: RUN_REGISTRY, abi: registryAbi, functionName: 'executeRun',
+      args: [runId], chain: arcTestnet, account, gasPrice,
+    })
+    const receipt = await waitReceipt(hash)
+    if (receipt.status !== 'success') throw new Error('Execute run reverted')
+    const run = loadRun(orgId, runId)
+    return { paid: run?.lines.length ?? 0, held: 0, txHash: hash }
+  }
+
+  // ... withdrawVault, getOrgsForAddress, setMaker, setChecker omitted for brevity
+  // Full source: src/settlement/arc.ts in project repository
+}</pre>
+
+<h3>src/lib/crypto.ts — AES-GCM encryption / PBKDF2 key derivation</h3>
+<div class="file-header">src/lib/crypto.ts</div>
+<pre>async function deriveKey(orgSecret: string, runId: string, employeeId: string): Promise&lt;CryptoKey&gt; {
+  const enc = new TextEncoder()
+  const km = await crypto.subtle.importKey(
+    'raw', enc.encode(orgSecret), { name: 'PBKDF2' }, false, ['deriveKey']
+  )
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: enc.encode(`${runId}:${employeeId}`), iterations: 50_000, hash: 'SHA-256' },
+    km,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  )
+}
+
+export async function encryptAmount(
+  orgSecret: string, runId: string, employeeId: string, amountUsdc: string
+): Promise&lt;string&gt; {
+  const key = await deriveKey(orgSecret, runId, employeeId)
+  const iv  = crypto.getRandomValues(new Uint8Array(12))
+  const cipher = await crypto.subtle.encrypt(
+    { name: 'AES-GCM', iv }, key, new TextEncoder().encode(amountUsdc)
+  )
+  const buf = new Uint8Array(12 + cipher.byteLength)
+  buf.set(iv)
+  buf.set(new Uint8Array(cipher), 12)
+  return '0x' + Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+export async function decryptAmount(
+  orgSecret: string, runId: string, employeeId: string, cipher: string
+): Promise&lt;string&gt; {
+  const key   = await deriveKey(orgSecret, runId, employeeId)
+  const bytes = Uint8Array.from(cipher.replace('0x','').match(/.{2}/g)!.map(b => parseInt(b,16)))
+  const plain = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv: bytes.slice(0, 12) }, key, bytes.slice(12)
+  )
+  return new TextDecoder().decode(plain)
+}
+
+// First 4 bytes of ciphertext — used by employee portal to scan runs without decrypting
+export function viewTag(cipher: string): string { return cipher.slice(0, 6) }
+
+// SHA-256 of stealthDest:employeeId — masks the true recipient on-chain
+export async function destCommitment(stealthDest: string, employeeId: string): Promise&lt;string&gt; {
+  const hash = await crypto.subtle.digest(
+    'SHA-256', new TextEncoder().encode(`${stealthDest}:${employeeId}`)
+  )
+  return '0x' + Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+export function generateOrgSecret(): string {
+  return Array.from(crypto.getRandomValues(new Uint8Array(32)))
+    .map(b => b.toString(16).padStart(2, '0')).join('')
+}</pre>
+
+<h3>src/lib/merkle.ts — Client-side Merkle root builder</h3>
+<div class="file-header">src/lib/merkle.ts</div>
+<pre>import { keccak256, encodePacked } from 'viem'
+import type { PayrollLine } from '../types/payroll'
+
+function hashLeaf(l: PayrollLine): `0x${string}` {
+  return keccak256(encodePacked(
+    ['string', 'bytes32', 'bytes32'],
+    [l.employeeId, l.destCommitment as `0x${string}`, (l.amountCipher.slice(0, 66)) as `0x${string}`]
+  ))
+}
+
+function pair(a: `0x${string}`, b: `0x${string}`): `0x${string}` {
+  const [x, y] = a.toLowerCase() &lt; b.toLowerCase() ? [a, b] : [b, a]
+  return keccak256(encodePacked(['bytes32', 'bytes32'], [x, y]))
+}
+
+export function buildMerkleRoot(lines: PayrollLine[]): `0x${string}` {
+  if (!lines.length)
+    return '0x0000000000000000000000000000000000000000000000000000000000000000'
+  let layer = lines.map(hashLeaf)
+  while (layer.length &gt; 1) {
+    const next: `0x${string}`[] = []
+    for (let i = 0; i &lt; layer.length; i += 2)
+      next.push(i + 1 &lt; layer.length ? pair(layer[i], layer[i+1]) : layer[i])
+    layer = next
+  }
+  return layer[0]
+}
+
+// NOTE: Merkle leaf in RunRegistry uses (lineIndex, amount, dest) — not employeeId.
+// Frontend uses a richer leaf (employeeId, destCommitment, amountCipher prefix) for the
+// roster root. The claimLine proof must be built from the RunRegistry leaf encoding.</pre>
+
+<!-- FOOTER -->
+<div style="margin-top:48px;padding-top:20px;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:11px;text-align:center">
+  Payroll Master &mdash; Arc Testnet &mdash; Generated Friday September 26, 2026<br/>
+  https://payrollmaster.netlify.app &mdash; Source: github.com/m3rald/Payrollmaster
+</div>
+
+</div>
+
+<script>
+  // Auto-trigger print if ?print=1 in URL
+  if (new URLSearchParams(window.location.search).get('print') === '1') window.print()
+</script>
+</body>
+</html>

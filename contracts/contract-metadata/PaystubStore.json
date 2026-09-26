@@ -1,13 +1,27 @@
 {
-  "contractAddress": "0x03292b1ba7e146dec1d055bde23efe8a442a3db8",
+  "contractAddress": "0x9d66ba788763175ce279bdb42a663d05a1a2d2fb",
   "network": "ARC-TESTNET",
   "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
   "contract_code_path": "/home/user/app/contracts/PaystubStore.sol",
   "contract_compiled_code_path": "/home/user/app/contracts/out/PaystubStore.sol/PaystubStore.json",
   "contract_network_and_links": {
-    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x03292b1ba7e146dec1d055bde23efe8a442a3db8"
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x9d66ba788763175ce279bdb42a663d05a1a2d2fb"
   },
   "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x9d66ba788763175ce279bdb42a663d05a1a2d2fb",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x9d66ba788763175ce279bdb42a663d05a1a2d2fb",
+      "txHash": "0x3eb66243dd01cea715d6eaf47b76cf1e9882f347e299bde54d00ed85f3f37dd4",
+      "deployedAt": "2026-09-26T10:35:44.477Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xc41c0a5a759bd85b068c10ca42489dce651f94de",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xc41c0a5a759bd85b068c10ca42489dce651f94de",
+      "txHash": "0x8ad1416d2f389f1a8d06b84ff098993de4ad52d6d0e1c43d9c5c96518bb73f48",
+      "deployedAt": "2026-09-25T12:53:56.586Z"
+    },
     {
       "chain": "Arc Testnet",
       "address": "0x03292b1ba7e146dec1d055bde23efe8a442a3db8",
@@ -17,6 +31,17 @@
     }
   ],
   "abi": [
+    {
+      "type": "constructor",
+      "inputs": [
+        {
+          "name": "_registry",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "nonpayable"
+    },
     {
       "type": "function",
       "name": "getViewTag",
@@ -71,6 +96,19 @@
           "name": "viewTag",
           "type": "bytes4",
           "internalType": "bytes4"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "registry",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
         }
       ],
       "stateMutability": "view"
@@ -138,6 +176,16 @@
         }
       ],
       "anonymous": false
+    },
+    {
+      "type": "error",
+      "name": "AlreadyStored",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NotRegistry",
+      "inputs": []
     }
   ]
 }

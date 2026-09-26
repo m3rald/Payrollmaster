@@ -1,13 +1,104 @@
 {
-  "contractAddress": "0x9ba157c1221ea791f3a4afd7653e9d221a50e331",
+  "contractAddress": "0x39035c0050de4c13e019218473dcdb5516c9b506",
   "network": "ARC-TESTNET",
   "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
   "contract_code_path": "/home/user/app/contracts/RunRegistry.sol",
   "contract_compiled_code_path": "/home/user/app/contracts/out/RunRegistry.sol/RunRegistry.json",
   "contract_network_and_links": {
-    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x9ba157c1221ea791f3a4afd7653e9d221a50e331"
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x39035c0050de4c13e019218473dcdb5516c9b506"
   },
   "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x39035c0050de4c13e019218473dcdb5516c9b506",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x39035c0050de4c13e019218473dcdb5516c9b506",
+      "txHash": "0x70b83a9b64db4c63bb7994220e114081d0b18d5d1b258b1d6d17bc5481113c99",
+      "deployedAt": "2026-09-26T14:14:52.641Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x46cb77e61af9be0ce8276ab7f96415587bd18223",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x46cb77e61af9be0ce8276ab7f96415587bd18223",
+      "txHash": "0x555e3e79b89189bb8e4b0356c0ff79c8b6b0d8579e7658f10f146b22c55901da",
+      "deployedAt": "2026-09-26T14:12:58.952Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x26b3eed2f0f440c4ab6ba0eb2310be3eda268477",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x26b3eed2f0f440c4ab6ba0eb2310be3eda268477",
+      "txHash": "0x3281ff689ba17fd5720e1912017353519beb586fe107fd65771247dca1fd38f1",
+      "deployedAt": "2026-09-26T14:11:48.098Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xcf981832ac288e23a83a152bd171bd9bf96e6058",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xcf981832ac288e23a83a152bd171bd9bf96e6058",
+      "txHash": "0x9de17c2c8805f4b69091474c53bd0e8868cd953f04aa13c7eba634bc8bf6a5b1",
+      "deployedAt": "2026-09-26T10:35:26.485Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xb3da363ca974b0680507b1ac20b14941027b2781",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xb3da363ca974b0680507b1ac20b14941027b2781",
+      "txHash": "0x20313d2f4da9f9267d23475c7be4048efed05486d29cfdca6dfb7ae8f30e930b",
+      "deployedAt": "2026-09-25T12:59:33.237Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xb3da363ca974b0680507b1ac20b14941027b2781",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xb3da363ca974b0680507b1ac20b14941027b2781",
+      "txHash": "0x20313d2f4da9f9267d23475c7be4048efed05486d29cfdca6dfb7ae8f30e930b",
+      "deployedAt": "2026-09-25T12:53:22.819Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x2067159744e4240407c088851928354993aa9843",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x2067159744e4240407c088851928354993aa9843",
+      "txHash": "0x905fe23d4622c98e219ef24495564a243a01cf662c6fc24152e08c90d6e05591",
+      "deployedAt": "2026-09-25T10:14:29.730Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xb304cc22170f0cb3e7a01ee0ac3ba2db60e31bcc",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xb304cc22170f0cb3e7a01ee0ac3ba2db60e31bcc",
+      "txHash": "0x2f0cefd809b41a79045c2130837169cf66b1a5ac00a3a4eb8951001cc6efcaad",
+      "deployedAt": "2026-09-25T10:13:43.482Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x51aa3c3e0c8d10f7b1a956c0688b4c05c85c735d",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x51aa3c3e0c8d10f7b1a956c0688b4c05c85c735d",
+      "txHash": "0xb2cb56ac1bf302faa84cc1f7e2e72ec923be0fd613b5796028dd1bd99ede02fa",
+      "deployedAt": "2026-09-24T11:56:53.097Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x2067159744e4240407c088851928354993aa9843",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x2067159744e4240407c088851928354993aa9843",
+      "txHash": "0x905fe23d4622c98e219ef24495564a243a01cf662c6fc24152e08c90d6e05591",
+      "deployedAt": "2026-09-24T11:56:16.560Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xb304cc22170f0cb3e7a01ee0ac3ba2db60e31bcc",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xb304cc22170f0cb3e7a01ee0ac3ba2db60e31bcc",
+      "txHash": "0x2f0cefd809b41a79045c2130837169cf66b1a5ac00a3a4eb8951001cc6efcaad",
+      "deployedAt": "2026-09-24T11:55:18.714Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xa726a0454c596016ebb5567867451a3b71944acb",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xa726a0454c596016ebb5567867451a3b71944acb",
+      "txHash": "0xa1fe137afd5789bc13afa5bbd58c121b487afe0f6c1ba7ca60821c4b07bd079b",
+      "deployedAt": "2026-09-24T08:14:59.295Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x68ccd1a61b5a4a0ceaf8b0ee1d70c6d3db9882ef",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x68ccd1a61b5a4a0ceaf8b0ee1d70c6d3db9882ef",
+      "txHash": "0x31a70769e256eeb65d57ced103d41862cb5d44a3c419e4eca4f518df69dbe8d3",
+      "deployedAt": "2026-09-24T08:09:42.911Z"
+    },
     {
       "chain": "Arc Testnet",
       "address": "0x9ba157c1221ea791f3a4afd7653e9d221a50e331",
@@ -140,6 +231,19 @@
     },
     {
       "type": "function",
+      "name": "deployer",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
       "name": "executeRun",
       "inputs": [
         {
@@ -150,12 +254,7 @@
       ],
       "outputs": [
         {
-          "name": "paid",
-          "type": "uint256",
-          "internalType": "uint256"
-        },
-        {
-          "name": "held",
+          "name": "pulled",
           "type": "uint256",
           "internalType": "uint256"
         }
@@ -197,6 +296,11 @@
           "internalType": "uint256"
         },
         {
+          "name": "heldAmount",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
           "name": "approved",
           "type": "bool",
           "internalType": "bool"
@@ -218,6 +322,19 @@
         }
       ],
       "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "setOrgFactory",
+      "inputs": [
+        {
+          "name": "_orgFactory",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
     },
     {
       "type": "event",
@@ -246,6 +363,19 @@
           "type": "uint256",
           "indexed": false,
           "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "OrgFactorySet",
+      "inputs": [
+        {
+          "name": "factory",
+          "type": "address",
+          "indexed": false,
+          "internalType": "address"
         }
       ],
       "anonymous": false
@@ -311,13 +441,7 @@
           "internalType": "string"
         },
         {
-          "name": "paid",
-          "type": "uint256",
-          "indexed": false,
-          "internalType": "uint256"
-        },
-        {
-          "name": "held",
+          "name": "pulled",
           "type": "uint256",
           "indexed": false,
           "internalType": "uint256"
@@ -334,6 +458,11 @@
     {
       "type": "error",
       "name": "AlreadyClaimed",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "AlreadyInitialized",
       "inputs": []
     },
     {
@@ -363,7 +492,17 @@
     },
     {
       "type": "error",
+      "name": "NotDeployer",
+      "inputs": []
+    },
+    {
+      "type": "error",
       "name": "OrgNotFound",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "ReentrancyGuardReentrantCall",
       "inputs": []
     },
     {
@@ -383,6 +522,11 @@
     },
     {
       "type": "error",
+      "name": "RunNotExecuted",
+      "inputs": []
+    },
+    {
+      "type": "error",
       "name": "RunNotFound",
       "inputs": []
     },
@@ -396,6 +540,11 @@
           "internalType": "address"
         }
       ]
+    },
+    {
+      "type": "error",
+      "name": "ZeroAmount",
+      "inputs": []
     }
   ]
 }

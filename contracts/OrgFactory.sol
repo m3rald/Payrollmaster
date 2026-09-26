@@ -10,7 +10,9 @@ contract OrgFactory {
     mapping(string orgId => address checker) public checkerOf;
 
     address public immutable usdc;
-    address public immutable registry;
+    address public registry;
+    address public immutable deployer;
+    bool private registrySet;
 
     event OrgCreated(string indexed orgId, address owner, address vault);
     event MakerSet(string indexed orgId, address maker);
@@ -21,9 +23,22 @@ contract OrgFactory {
     error OrgNotFound();
     error NotOrgOwner();
 
-    constructor(address _usdc, address _registry) {
+    error RegistryAlreadySet();
+    error NotDeployer();
+    error ZeroRegistry();
+
+    constructor(address _usdc) {
         usdc = _usdc;
+        deployer = msg.sender;
+    }
+
+    /// @notice One-time setter called by deployer after RunRegistry is deployed.
+    function setRegistry(address _registry) external {
+        if (msg.sender != deployer) revert NotDeployer();
+        if (registrySet) revert RegistryAlreadySet();
+        if (_registry == address(0)) revert ZeroRegistry();
         registry = _registry;
+        registrySet = true;
     }
 
     function createOrg(string calldata orgId, string calldata name, address owner) external returns (address vault) {

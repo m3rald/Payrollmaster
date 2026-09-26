@@ -1,26 +1,39 @@
 import { useState } from 'react'
-import { Users, Plus, Trash2, Mail } from 'lucide-react'
+import { Users, Plus, Trash2, Mail, Link2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Card, InnerCard } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import type { Employee, Org } from '../types/payroll'
 
+function copyPortalLink(empId: string) {
+  const url = new URL(window.location.href)
+  url.searchParams.set('emp', empId)
+  url.searchParams.set('tab', 'employee-portal')
+  void navigator.clipboard.writeText(url.toString())
+  toast.success('Portal link copied — share with employee')
+}
+
 interface RosterProps {
   org: Org | undefined
   employees: Employee[]
-  onAdd: (name: string, email?: string) => Employee
+  onAdd: (name: string, walletAddress: string, email?: string) => Employee
   onDelete: (id: string) => void
 }
+
+const ADDR_RE = /^0x[0-9a-fA-F]{40}$/
 
 export function Roster({ org, employees, onAdd, onDelete }: RosterProps) {
   const [showForm, setShowForm] = useState(false)
   const [name, setName] = useState('')
+  const [wallet, setWallet] = useState('')
   const [email, setEmail] = useState('')
+  const walletValid = ADDR_RE.test(wallet.trim())
 
   function handleAdd() {
-    if (!name.trim()) return
-    onAdd(name.trim(), email.trim() || undefined)
-    setName(''); setEmail(''); setShowForm(false)
+    if (!name.trim() || !walletValid) return
+    onAdd(name.trim(), wallet.trim(), email.trim() || undefined)
+    setName(''); setWallet(''); setEmail(''); setShowForm(false)
   }
 
   if (!org) {
@@ -48,9 +61,19 @@ export function Roster({ org, employees, onAdd, onDelete }: RosterProps) {
           <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--ink)' }}>New Employee</h3>
           <div className="space-y-3">
             <Input label="Full name" placeholder="Alice Smith" value={name} onChange={e => setName(e.target.value)} />
+            <Input
+              label="Wallet address (payment destination)"
+              placeholder="0x..."
+              value={wallet}
+              onChange={e => setWallet(e.target.value)}
+              style={wallet && !walletValid ? { borderColor: 'var(--danger)' } : undefined}
+            />
+            {wallet && !walletValid && (
+              <p className="text-xs" style={{ color: 'var(--danger)' }}>Must be a valid 0x address (42 characters)</p>
+            )}
             <Input label="Email (optional)" type="email" placeholder="alice@company.com" value={email} onChange={e => setEmail(e.target.value)} />
             <div className="flex gap-2">
-              <Button size="sm" onClick={handleAdd} disabled={!name.trim()}>Add</Button>
+              <Button size="sm" onClick={handleAdd} disabled={!name.trim() || !walletValid}>Add</Button>
               <Button size="sm" variant="ghost" onClick={() => setShowForm(false)}>Cancel</Button>
             </div>
           </div>
@@ -77,6 +100,13 @@ export function Roster({ org, employees, onAdd, onDelete }: RosterProps) {
                 </div>
                 <div>
                   <div className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>{emp.displayName}</div>
+                  {emp.walletAddress ? (
+                    <div className="flex items-center gap-1 text-xs font-mono" style={{ color: 'var(--accent)' }}>
+                      {emp.walletAddress.slice(0, 6)}...{emp.walletAddress.slice(-4)}
+                    </div>
+                  ) : (
+                    <div className="text-xs" style={{ color: 'var(--danger)' }}>No wallet — edit to add</div>
+                  )}
                   {emp.email && (
                     <div className="flex items-center gap-1 text-xs" style={{ color: 'var(--muted)' }}>
                       <Mail className="size-3" /> {emp.email}
@@ -84,10 +114,20 @@ export function Roster({ org, employees, onAdd, onDelete }: RosterProps) {
                   )}
                 </div>
               </div>
-              <button onClick={() => onDelete(emp.id)} className="rounded-lg p-1.5 transition-all hover:opacity-80"
-                style={{ color: 'var(--danger)' }}>
-                <Trash2 className="size-4" />
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => copyPortalLink(emp.id)}
+                  title="Copy portal link"
+                  className="rounded-lg p-1.5 transition-all hover:opacity-80"
+                  style={{ color: 'var(--accent)' }}
+                >
+                  <Link2 className="size-4" />
+                </button>
+                <button onClick={() => onDelete(emp.id)} className="rounded-lg p-1.5 transition-all hover:opacity-80"
+                  style={{ color: 'var(--danger)' }}>
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
             </div>
           ))}
         </div>

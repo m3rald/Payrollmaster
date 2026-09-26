@@ -37,5 +37,13 @@ export default defineConfig({
   server: {
     allowedHosts: true,
     cors: true,
+    hmr: {
+      // Route HMR WebSocket through the HTTPS proxy.
+      // host:true picks up the actual preview hostname dynamically so the
+      // WebSocket URL never hardcodes a stale session hostname.
+      clientPort: 443,
+      protocol: 'wss',
+      host: true,
+    },
   },
 })

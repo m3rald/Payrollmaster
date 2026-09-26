@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAccount } from 'wagmi'
 import { ConnectKitButton } from 'connectkit'
-import { Building2, Plus, ChevronRight, Wallet, ArrowDownToLine } from 'lucide-react'
+import { Building2, Plus, ChevronRight, Wallet, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react'
 import { Card, InnerCard } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Badge } from '../components/ui/Badge'
 import { Input } from '../components/ui/Input'
+import { TxProgress } from '../components/ui/TxProgress'
+import type { TxStep } from '../components/ui/TxProgress'
 import { formatUsdc, runStatusLabel, runStatusColor, formatRelTime } from '../lib/utils'
 import { arcSettlement } from '../settlement/arc'
 import type { Org, PayrollRun } from '../types/payroll'
@@ -20,16 +22,24 @@ interface HomeProps {
   onSelectOrg: (id: string) => void
   onNav: (s: Screen) => void
   onFundVault: (amountDollars: string) => Promise<void>
+  onWithdrawVault: (amountDollars: string) => Promise<void>
+  onRetryRegistration: (orgId: string) => Promise<void>
 }
 
-export function Home({ orgs, activeOrg, runs, loading, onCreateOrg, onSelectOrg, onNav, onFundVault }: HomeProps) {
+export function Home({ orgs, activeOrg, runs, loading, onCreateOrg, onSelectOrg, onNav, onFundVault, onWithdrawVault, onRetryRegistration }: HomeProps) {
   const { isConnected } = useAccount()
   const [showCreate, setShowCreate] = useState(false)
   const [showFund, setShowFund] = useState(false)
+  const [showWithdraw, setShowWithdraw] = useState(false)
   const [orgName, setOrgName] = useState('')
   const [fundAmount, setFundAmount] = useState('')
+  const [withdrawAmount, setWithdrawAmount] = useState('')
   const [creating, setCreating] = useState(false)
-  const [funding, setFunding] = useState(false)
+  const [fundStep, setFundStep] = useState<TxStep>('idle')
+  const [withdrawStep, setWithdrawStep] = useState<TxStep>('idle')
+  const [fundError, setFundError] = useState('')
+  const [withdrawError, setWithdrawError] = useState('')
+  const [retrying, setRetrying] = useState(false)
   const [vaultBalance, setVaultBalance] = useState('0')
 
   const refreshBalance = useCallback(() => {
@@ -48,15 +58,49 @@ export function Home({ orgs, activeOrg, runs, loading, onCreateOrg, onSelectOrg,
     finally { setCreating(false) }
   }
 
+  async function handleRetryRegistration() {
+    if (!activeOrg) return
+    setRetrying(true)
+    try { await onRetryRegistration(activeOrg.id) }
+    finally { setRetrying(false) }
+  }
+
+  async function handleWithdraw() {
+    if (!withdrawAmount.trim()) return
+    setWithdrawError('')
+    setWithdrawStep('signing')
+    try {
+      setWithdrawStep('broadcasting')
+      await onWithdrawVault(withdrawAmount.trim())
+      setWithdrawStep('done')
+      setWithdrawAmount('')
+      refreshBalance()
+      setTimeout(() => { setWithdrawStep('idle'); setShowWithdraw(false) }, 2000)
+    } catch (e) {
+      setWithdrawError(e instanceof Error ? e.message : 'Withdrawal failed')
+      setWithdrawStep('error')
+      setTimeout(() => setWithdrawStep('idle'), 4000)
+    }
+  }
+
   async function handleFund() {
     if (!fundAmount.trim()) return
-    setFunding(true)
+    setFundError('')
+    setFundStep('signing')
     try {
+      // The settlement does approve then fund sequentially;
+      // we advance the step indicator at each checkpoint
+      setFundStep('broadcasting')
       await onFundVault(fundAmount.trim())
+      setFundStep('done')
       setFundAmount('')
-      setShowFund(false)
       refreshBalance()
-    } finally { setFunding(false) }
+      setTimeout(() => { setFundStep('idle'); setShowFund(false) }, 2000)
+    } catch (e) {
+      setFundError(e instanceof Error ? e.message : 'Transaction failed')
+      setFundStep('error')
+      setTimeout(() => setFundStep('idle'), 4000)
+    }
   }
 
   if (!isConnected) {
@@ -140,9 +184,14 @@ export function Home({ orgs, activeOrg, runs, loading, onCreateOrg, onSelectOrg,
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--muted)' }}>Vault Balance</span>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setShowFund(v => !v)}>
-                <ArrowDownToLine className="size-3.5" /> Fund
-              </Button>
+              <div className="flex gap-1">
+                <Button variant="ghost" size="sm" onClick={() => { setShowFund(v => !v); setShowWithdraw(false) }}>
+                  <ArrowDownToLine className="size-3.5" /> Fund
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => { setShowWithdraw(v => !v); setShowFund(false) }}>
+                  <ArrowUpFromLine className="size-3.5" /> Withdraw
+                </Button>
+              </div>
             </div>
             <div className="flex items-baseline gap-1.5 mb-1">
               <span className="display text-4xl font-bold tabular-nums" style={{ color: 'var(--ink)' }}>
@@ -154,7 +203,19 @@ export function Home({ orgs, activeOrg, runs, loading, onCreateOrg, onSelectOrg,
               Arc Testnet ·{' '}
               {activeOrg.vaultAddress
                 ? <span className="font-mono">{activeOrg.vaultAddress.slice(0, 10)}…</span>
-                : <span style={{ color: 'var(--warning)' }}>Vault not registered on-chain yet</span>
+                : (
+                  <span className="inline-flex items-center gap-2">
+                    <span style={{ color: 'var(--warning)' }}>Vault not registered on-chain yet</span>
+                    <button
+                      onClick={() => { void handleRetryRegistration() }}
+                      disabled={retrying || loading}
+                      className="text-xs font-semibold px-2 py-0.5 rounded-full transition-opacity hover:opacity-80 disabled:opacity-40"
+                      style={{ background: 'var(--accent)', color: 'white' }}
+                    >
+                      {retrying ? 'Registering…' : 'Register now'}
+                    </button>
+                  </span>
+                )
               }
             </p>
 
@@ -173,17 +234,51 @@ export function Home({ orgs, activeOrg, runs, loading, onCreateOrg, onSelectOrg,
                   type="number"
                   min="0"
                 />
-                <div className="flex gap-2">
-                  <Button size="sm" onClick={() => { void handleFund() }} loading={funding || loading} disabled={!fundAmount.trim() || !activeOrg.vaultAddress}>
-                    Approve &amp; Fund
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setShowFund(false)}>Cancel</Button>
-                </div>
+                {fundStep === 'idle' || fundStep === 'error' ? (
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={() => { void handleFund() }} disabled={!fundAmount.trim() || !activeOrg.vaultAddress}>
+                      Approve &amp; Fund
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setShowFund(false)}>Cancel</Button>
+                  </div>
+                ) : null}
+                <TxProgress
+                  step={fundStep}
+                  steps={['Approving USDC', 'Depositing', 'Confirming', 'Done']}
+                  error={fundError}
+                />
                 {!activeOrg.vaultAddress && (
                   <p className="text-xs" style={{ color: 'var(--warning)' }}>
-                    Register the org on-chain first (create a new run and the vault will be linked automatically).
+                    Register the org on-chain first using the "Register now" button above.
                   </p>
                 )}
+              </div>
+            )}
+
+            {/* Withdraw form — inline */}
+            {showWithdraw && (
+              <div className="mt-4 pt-4 border-t space-y-3" style={{ borderColor: 'var(--border)' }}>
+                <h4 className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Withdraw from Vault</h4>
+                <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                  Withdraw idle USDC back to your wallet. Only the org owner can withdraw.
+                </p>
+                <Input
+                  label="Amount (USDC)"
+                  placeholder="e.g. 1000.00"
+                  value={withdrawAmount}
+                  onChange={e => setWithdrawAmount(e.target.value)}
+                  type="number"
+                  min="0"
+                />
+                {withdrawStep === 'idle' || withdrawStep === 'error' ? (
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={() => { void handleWithdraw() }} disabled={!withdrawAmount.trim() || !activeOrg.vaultAddress}>
+                      Withdraw
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setShowWithdraw(false)}>Cancel</Button>
+                  </div>
+                ) : null}
+                <TxProgress step={withdrawStep} error={withdrawError} />
               </div>
             )}
           </Card>

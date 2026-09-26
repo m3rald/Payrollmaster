@@ -15,12 +15,14 @@ export interface Employee {
   orgId: string
   displayName: string
   email?: string
+  walletAddress: string   // EVM address — used as dest in claimLine merkle leaf
   active: boolean
 }
 
 export interface PayrollLine {
   employeeId: string
   amountUsdc: string
+  dest: string          // stealth destination address for this line
   destCommitment: string
   amountCipher: string
   viewTag: string

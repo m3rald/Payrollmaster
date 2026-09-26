@@ -14,9 +14,12 @@ contract Vault {
 
     event Funded(uint256 amount, uint256 newBalance);
     event Pulled(address to, uint256 amount);
+    event Withdrawn(address to, uint256 amount);
 
     error NotRegistry();
+    error NotOwner();
     error InvalidRecipient();
+    error ZeroAmount();
 
     constructor(address _usdc, string memory _orgId, address _owner, address _registry) {
         usdc = _usdc;
@@ -36,6 +39,14 @@ contract Vault {
 
         IERC20(usdc).safeTransfer(to, amount);
         emit Pulled(to, amount);
+    }
+
+    /// @notice Owner can withdraw any idle USDC from the vault.
+    function withdraw(uint256 amount) external {
+        if (msg.sender != owner) revert NotOwner();
+        if (amount == 0) revert ZeroAmount();
+        IERC20(usdc).safeTransfer(owner, amount);
+        emit Withdrawn(owner, amount);
     }
 
     function balance() external view returns (uint256) {
