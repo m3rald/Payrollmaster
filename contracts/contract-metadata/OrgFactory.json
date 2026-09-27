@@ -1,13 +1,34 @@
 {
-  "contractAddress": "0x2fb1aa6bd50138989171f3de85c0539fdc035bd2",
+  "contractAddress": "0x3b47fd28ebfd8f7158b79248144081bc3a075e89",
   "network": "ARC-TESTNET",
   "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
   "contract_code_path": "/home/user/app/contracts/OrgFactory.sol",
   "contract_compiled_code_path": "/home/user/app/contracts/out/OrgFactory.sol/OrgFactory.json",
   "contract_network_and_links": {
-    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x2fb1aa6bd50138989171f3de85c0539fdc035bd2"
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x3b47fd28ebfd8f7158b79248144081bc3a075e89"
   },
   "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x3b47fd28ebfd8f7158b79248144081bc3a075e89",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x3b47fd28ebfd8f7158b79248144081bc3a075e89",
+      "txHash": "0x0abb9e75b82dc2c4b75656d0a0d1b24f73cc148aa78b474bd9f541a282beca28",
+      "deployedAt": "2026-09-27T15:54:32.540Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x3b47fd28ebfd8f7158b79248144081bc3a075e89",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x3b47fd28ebfd8f7158b79248144081bc3a075e89",
+      "txHash": "0x0abb9e75b82dc2c4b75656d0a0d1b24f73cc148aa78b474bd9f541a282beca28",
+      "deployedAt": "2026-09-27T15:36:22.880Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0xd4bfb0954e120af97e5a4209b0a4df485b0bfa4c",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xd4bfb0954e120af97e5a4209b0a4df485b0bfa4c",
+      "txHash": "0x4fccafb0ed18fc339a1a3e9a320c9c978be5bae95aee5e463de50ae8ae4df108",
+      "deployedAt": "2026-09-27T15:08:50.565Z"
+    },
     {
       "chain": "Arc Testnet",
       "address": "0x2fb1aa6bd50138989171f3de85c0539fdc035bd2",
@@ -113,11 +134,6 @@
       "inputs": [
         {
           "name": "_usdc",
-          "type": "address",
-          "internalType": "address"
-        },
-        {
-          "name": "_registry",
           "type": "address",
           "internalType": "address"
         }
@@ -261,6 +277,19 @@
     },
     {
       "type": "function",
+      "name": "setRegistry",
+      "inputs": [
+        {
+          "name": "_registry",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
       "name": "usdc",
       "inputs": [],
       "outputs": [
@@ -355,6 +384,25 @@
       "anonymous": false
     },
     {
+      "type": "event",
+      "name": "RegistrySet",
+      "inputs": [
+        {
+          "name": "oldRegistry",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "newRegistry",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
       "type": "error",
       "name": "InvalidOwner",
       "inputs": []
@@ -372,6 +420,26 @@
     {
       "type": "error",
       "name": "OrgNotFound",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "RegistryAlreadySet",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "RegistryNotSet",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "ZeroRegistry",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "ZeroUsdc",
       "inputs": []
     }
   ]

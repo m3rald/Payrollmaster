@@ -1,13 +1,34 @@
 {
-  "contractAddress": "0x39035c0050de4c13e019218473dcdb5516c9b506",
+  "contractAddress": "0x31882d1c006b191dd246f250f3d1ff193d0274fb",
   "network": "ARC-TESTNET",
   "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
   "contract_code_path": "/home/user/app/contracts/RunRegistry.sol",
   "contract_compiled_code_path": "/home/user/app/contracts/out/RunRegistry.sol/RunRegistry.json",
   "contract_network_and_links": {
-    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x39035c0050de4c13e019218473dcdb5516c9b506"
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x31882d1c006b191dd246f250f3d1ff193d0274fb"
   },
   "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x31882d1c006b191dd246f250f3d1ff193d0274fb",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x31882d1c006b191dd246f250f3d1ff193d0274fb",
+      "txHash": "0x699f06c206ff10a7a07bc06c602912bd154eb619e9c749316e4d1fbbcf315c7e",
+      "deployedAt": "2026-09-27T15:54:51.042Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x31882d1c006b191dd246f250f3d1ff193d0274fb",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x31882d1c006b191dd246f250f3d1ff193d0274fb",
+      "txHash": "0x699f06c206ff10a7a07bc06c602912bd154eb619e9c749316e4d1fbbcf315c7e",
+      "deployedAt": "2026-09-27T15:36:58.203Z"
+    },
+    {
+      "chain": "Arc Testnet",
+      "address": "0x0c61d522cf07daed166156fdf6659b0f521b6b3c",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x0c61d522cf07daed166156fdf6659b0f521b6b3c",
+      "txHash": "0xfde78f7a1fc1b7e0a0b96618f5851c0882eb8b65dcb6df7ed42e2431606a690c",
+      "deployedAt": "2026-09-27T15:09:15.408Z"
+    },
     {
       "chain": "Arc Testnet",
       "address": "0x39035c0050de4c13e019218473dcdb5516c9b506",
@@ -125,6 +146,19 @@
         }
       ],
       "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "CLAIM_WINDOW",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
     },
     {
       "type": "function",
@@ -263,6 +297,25 @@
     },
     {
       "type": "function",
+      "name": "executedAt",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
       "name": "orgFactory",
       "inputs": [],
       "outputs": [
@@ -273,6 +326,19 @@
         }
       ],
       "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "reclaimResidual",
+      "inputs": [
+        {
+          "name": "runId",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
     },
     {
       "type": "function",
@@ -467,6 +533,11 @@
     },
     {
       "type": "error",
+      "name": "ClaimWindowOpen",
+      "inputs": []
+    },
+    {
+      "type": "error",
       "name": "InsufficientVaultBalance",
       "inputs": []
     },
@@ -478,6 +549,11 @@
     {
       "type": "error",
       "name": "InvalidProof",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NoResidual",
       "inputs": []
     },
     {
@@ -544,6 +620,11 @@
     {
       "type": "error",
       "name": "ZeroAmount",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "ZeroFactory",
       "inputs": []
     }
   ]

@@ -6,7 +6,7 @@ import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { shortenAddress } from '../lib/utils'
 import { buildAddressExplorerUrl } from '../onchain-facts'
-import { toast } from 'sonner'
+
 
 
 const ARC_TESTNET_ID = 5042002

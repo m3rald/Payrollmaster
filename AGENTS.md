@@ -18,22 +18,21 @@ Any org funds a vault, a maker prepares a run, a checker approves it, and the ow
 - Token: USDC at 0x3600000000000000000000000000000000000000 (6 decimals)
 - Privacy: app-layer AES-GCM per-line encryption; only merkle root stored on-chain
 
-## Deployed Contracts (Arc Testnet) — 2026-09-26 (latest)
+## Deployed Contracts (Arc Testnet) — 2026-09-27 (FINAL — fully wired)
 
 | Contract | Address | Explorer |
 |---|---|---|
-| OrgFactory | 0x2fb1aa6bd50138989171f3de85c0539fdc035bd2 | https://explorer.testnet.arc.io/address/0x2fb1aa6bd50138989171f3de85c0539fdc035bd2 |
-| RunRegistry | 0x39035c0050de4c13e019218473dcdb5516c9b506 | https://explorer.testnet.arc.io/address/0x39035c0050de4c13e019218473dcdb5516c9b506 |
-| PaystubStore | 0x9d66ba788763175ce279bdb42a663d05a1a2d2fb | https://explorer.testnet.arc.io/address/0x9d66ba788763175ce279bdb42a663d05a1a2d2fb |
-| StealthDistributor | 0x5f89105d439900b406ebcfd4c74cf596b874a0ce | https://explorer.testnet.arc.io/address/0x5f89105d439900b406ebcfd4c74cf596b874a0ce |
+| OrgFactory | 0x3b47fd28ebfd8f7158b79248144081bc3a075e89 | https://explorer.testnet.arc.io/address/0x3b47fd28ebfd8f7158b79248144081bc3a075e89 |
+| RunRegistry | 0x31882d1c006b191dd246f250f3d1ff193d0274fb | https://explorer.testnet.arc.io/address/0x31882d1c006b191dd246f250f3d1ff193d0274fb |
+| PaystubStore | 0xe1fcdf0d54bb1f081511a94d55ad8ec5479035d8 | https://explorer.testnet.arc.io/address/0xe1fcdf0d54bb1f081511a94d55ad8ec5479035d8 |
+| StealthDistributor | 0xbb35d65b55fd1a2b3a5650a074e724a5071c5fb6 | https://explorer.testnet.arc.io/address/0xbb35d65b55fd1a2b3a5650a074e724a5071c5fb6 |
 
-WIRING STATUS (2026-09-26 after 10 deploys):
-- OrgFactory.registry() = 0x39035c00 (RunRegistry) ✓ — Vault bakes correct registry
-- RunRegistry.orgFactory() = 0x494b3966 (prev OrgFactory) ✗ — createRun still broken
-- PaystubStore.registry() = 0x9d66ba78 ✓
-- StealthDistributor ✓
-TOMORROW: Deploy OrgFactory(usdc_only) → get address → Deploy RunRegistry(OrgFactory) → call OrgFactory.setRegistry(RunRegistry)
-OrgFactory now has setRegistry(address) one-time setter — circular dep permanently broken.
+WIRING STATUS (2026-09-27 — fully matched):
+- OrgFactory.registry() = 0x31882d1c (RunRegistry) ✓
+- RunRegistry.orgFactory() = 0x3b47fd28 (OrgFactory) ✓
+- PaystubStore.registry() = 0x31882d1c (RunRegistry) ✓
+- StealthDistributor.registry() = 0x31882d1c (RunRegistry) ✓
+- createRun: fully operational — no more OrgNotFound revert
 
 ## Key Files
 

@@ -1,13 +1,20 @@
 {
-  "contractAddress": "0x5f89105d439900b406ebcfd4c74cf596b874a0ce",
+  "contractAddress": "0xbb35d65b55fd1a2b3a5650a074e724a5071c5fb6",
   "network": "ARC-TESTNET",
   "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
   "contract_code_path": "/home/user/app/contracts/StealthDistributor.sol",
   "contract_compiled_code_path": "/home/user/app/contracts/out/StealthDistributor.sol/StealthDistributor.json",
   "contract_network_and_links": {
-    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x5f89105d439900b406ebcfd4c74cf596b874a0ce"
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0xbb35d65b55fd1a2b3a5650a074e724a5071c5fb6"
   },
   "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0xbb35d65b55fd1a2b3a5650a074e724a5071c5fb6",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0xbb35d65b55fd1a2b3a5650a074e724a5071c5fb6",
+      "txHash": "0xcbaeb52d8f9fe92b2a26f7ffea0c4f3bb4858c68c109bc105c881678bda4e93a",
+      "deployedAt": "2026-09-27T15:10:07.490Z"
+    },
     {
       "chain": "Arc Testnet",
       "address": "0x5f89105d439900b406ebcfd4c74cf596b874a0ce",
@@ -146,6 +153,11 @@
     {
       "type": "error",
       "name": "NotRegistry",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "ZeroAddress",
       "inputs": []
     }
   ]

@@ -1,0 +1,37 @@
+{
+  "contractAddress": "0x0a174b88defaa01059575b01afa59a0287520606",
+  "network": "ARC-TESTNET",
+  "deployerWalletId": "3c2464b2-8369-52e2-a782-800bbeca5396",
+  "contract_code_path": "/home/user/app/contracts/SetRegistryCaller.sol",
+  "contract_compiled_code_path": "/home/user/app/contracts/out/SetRegistryCaller.sol/SetRegistryCaller.json",
+  "contract_network_and_links": {
+    "Arc Testnet": "https://explorer.testnet.arc.io/address/0x0a174b88defaa01059575b01afa59a0287520606"
+  },
+  "contract_deployments": [
+    {
+      "chain": "Arc Testnet",
+      "address": "0x0a174b88defaa01059575b01afa59a0287520606",
+      "explorerUrl": "https://explorer.testnet.arc.io/address/0x0a174b88defaa01059575b01afa59a0287520606",
+      "txHash": "0x6dece59e87590f1255fa83e227de213efceff87a4359b7f7928510ec501f698f",
+      "deployedAt": "2026-09-27T15:38:41.497Z"
+    }
+  ],
+  "abi": [
+    {
+      "type": "constructor",
+      "inputs": [
+        {
+          "name": "orgFactory",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "registry",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "nonpayable"
+    }
+  ]
+}

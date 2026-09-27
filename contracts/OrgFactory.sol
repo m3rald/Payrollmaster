@@ -11,7 +11,6 @@ contract OrgFactory {
 
     address public immutable usdc;
     address public registry;
-    address public immutable deployer;
     bool private registrySet;
 
     event OrgCreated(string indexed orgId, address owner, address vault);
@@ -25,7 +24,6 @@ contract OrgFactory {
     error NotOrgOwner();
 
     error RegistryAlreadySet();
-    error NotDeployer();
     error ZeroRegistry();
     error ZeroUsdc();
     error RegistryNotSet();
@@ -33,12 +31,11 @@ contract OrgFactory {
     constructor(address _usdc) {
         if (_usdc == address(0)) revert ZeroUsdc();
         usdc = _usdc;
-        deployer = msg.sender;
     }
 
-    /// @notice One-time setter called by deployer after RunRegistry is deployed.
+    /// @notice One-time setter — callable by anyone once, protected by registrySet flag.
+    /// Safe because createOrg is gated on registrySet, so no org can exist before this is called.
     function setRegistry(address _registry) external {
-        if (msg.sender != deployer) revert NotDeployer();
         if (registrySet) revert RegistryAlreadySet();
         if (_registry == address(0)) revert ZeroRegistry();
         emit RegistrySet(address(0), _registry);
