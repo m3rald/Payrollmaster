@@ -510,3 +510,13 @@
 {"level":"warn","message":"StreamMiddleware - Unknown response id \"8938367109033145\"","timestamp":1790524701604}
 {"level":"warn","message":"StreamMiddleware - Unknown response id \"5030198442712124\"","timestamp":1790524771962}
 {"level":"warn","message":"StreamMiddleware - Unknown response id \"6299248694020426\"","timestamp":1790524784186}
+{"level":"warn","message":"StreamMiddleware - Unknown response id \"8918638158972000\"","timestamp":1790524873991}
+{"level":"warn","message":"StreamMiddleware - Unknown response id \"4727843594108108\"","timestamp":1790524875293}
+{"level":"warn","message":"StreamMiddleware - Unknown response id \"7399316811023085\"","timestamp":1790524927896}
+{"level":"warn","message":"StreamMiddleware - Unknown response id \"4066830607355938\"","timestamp":1790525240579}
+{"level":"warn","message":"StreamMiddleware - Unknown response id \"2757152833686826\"","timestamp":1790525628144}
+{"level":"warn","message":"StreamMiddleware - Unknown response id \"6042813481759720\"","timestamp":1790525685894}
+{"level":"warn","message":"StreamMiddleware - Unknown response id \"5124772381048110\"","timestamp":1790526319942}
+{"level":"debug","message":"Provider initialization - wallet not connected","timestamp":1790526325157}
+{"level":"error","message":"Unhandled promise rejection: Error: Could not establish connection. Receiving end does not exist.\n    at n (chrome-extension://dmkamcknogkgcdfhhbddcghachkejeap/injectedScript.bundle.js:2:84147)","timestamp":1790527127405,"stack":"Error: Could not establish connection. Receiving end does not exist.\n    at n (chrome-extension://dmkamcknogkgcdfhhbddcghachkejeap/injectedScript.bundle.js:2:84147)"}
+{"level":"warn","message":"StreamMiddleware - Unknown response id \"8755725122248743\"","timestamp":1790527137108}
