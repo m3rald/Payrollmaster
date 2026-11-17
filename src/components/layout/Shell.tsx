@@ -1,4 +1,4 @@
-import { ConnectKitButton } from 'connectkit'
+import { ConnectWallet } from '../ui/ConnectWallet'
 import { Building2, Users, PlayCircle, ShieldCheck, LayoutDashboard, UserCircle, Settings, Eye, Sun, Moon, BookOpen } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import type { Screen } from '../../App'
@@ -147,7 +147,7 @@ export function Shell({ screen, onNav, orgName, role, children }: ShellProps) {
 
         {/* Wallet + dark mode */}
         <div className="mt-4 px-1 flex flex-col gap-2">
-          <ConnectKitButton />
+          <ConnectWallet />
           <button
             onClick={toggleDark}
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all hover:opacity-80 w-full"
@@ -181,7 +181,7 @@ export function Shell({ screen, onNav, orgName, role, children }: ShellProps) {
             >
               {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
             </button>
-            <ConnectKitButton />
+            <ConnectWallet />
           </div>
         </header>
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAccount } from 'wagmi'
-import { ConnectKitButton } from 'connectkit'
+import { ConnectWallet } from '../components/ui/ConnectWallet'
 import { UserCircle, Lock, ExternalLink, CheckCircle2, Clock, Coins } from 'lucide-react'
 import { toast } from 'sonner'
 import { Card, InnerCard } from '../components/ui/Card'
@@ -172,7 +172,7 @@ export function EmployeePortal() {
             Connect the wallet your employer added to the payroll roster to see and claim your USDC.
           </p>
         </div>
-        <ConnectKitButton />
+        <ConnectWallet />
       </div>
     )
   }

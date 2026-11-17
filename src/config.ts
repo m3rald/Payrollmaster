@@ -20,8 +20,17 @@ const wcProjectId = (import.meta.env.VITE_WC_PROJECT_ID as string | undefined) ?
 const connectors = [
   // MetaMask targeted explicitly — OKX hijacks window.ethereum so we must name it
   injected({ target: 'metaMask' }),
-  // OKX injects at window.okxwallet — separate target required
-  injected({ target: 'okxWallet' }),
+  // OKX injects at window.okxwallet. wagmi has no built-in 'okxWallet' target,
+  // so we hand it the real provider directly (this is what makes it connect
+  // without a QR code).
+  injected({
+    target: {
+      id: 'okxWallet',
+      name: 'OKX Wallet',
+      provider: (win) =>
+        (win as unknown as { okxwallet?: never } | undefined)?.okxwallet,
+    },
+  }),
   // WalletConnect v2: QR-code / mobile fallback (only when a project ID is set)
   ...(wcProjectId
     ? [walletConnect({ projectId: wcProjectId, showQrModal: true })]

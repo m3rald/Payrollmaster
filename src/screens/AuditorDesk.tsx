@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Eye, Lock, ExternalLink, AlertTriangle } from 'lucide-react'
 import { useAccount } from 'wagmi'
-import { ConnectKitButton } from 'connectkit'
+import { ConnectWallet } from '../components/ui/ConnectWallet'
 import { Card, InnerCard } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Badge } from '../components/ui/Badge'
@@ -85,7 +85,7 @@ export function AuditorDesk({ org, runs }: AuditorDeskProps) {
             Connect your wallet to access auditor view.
           </p>
         </div>
-        <ConnectKitButton />
+        <ConnectWallet />
       </div>
     )
   }

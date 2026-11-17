@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useAccount } from 'wagmi'
-import { ConnectKitButton } from 'connectkit'
+import { ConnectWallet } from '../components/ui/ConnectWallet'
 import { Building2, Plus, ChevronRight, Wallet, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react'
 import { Card, InnerCard } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
@@ -115,7 +115,7 @@ export function Home({ orgs, activeOrg, runs, loading, onCreateOrg, onSelectOrg,
             Connect to Arc Testnet to create an org and run payroll with USDC.
           </p>
         </div>
-        <ConnectKitButton />
+        <ConnectWallet />
       </div>
     )
   }
