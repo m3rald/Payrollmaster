@@ -2,7 +2,7 @@ import { createPublicClient, http, erc20Abi, parseAbi, type Address, type Wallet
 import { arcTestnet } from 'viem/chains'
 import type { Settlement, FundResult, ExecuteRunResult } from './types'
 import { loadRun } from '../lib/store'
-import { getUsdc } from '../onchain-facts'
+import { getUsdc, explorerApiBase } from '../onchain-facts'
 
 const CHAIN_ID = 5042002
 const usdcFact = getUsdc(CHAIN_ID)
@@ -27,9 +27,6 @@ const vaultAbi = parseAbi([
   'function balance() external view returns (uint256)',
   'function owner() external view returns (address)',
 ])
-const orgFactoryEventsAbi = parseAbi([
-  'event OrgCreated(string indexed orgId, address owner, address vault)',
-])
 const registryAbi = parseAbi([
   'function createRun(string orgId, string runId, bytes32 rosterRoot, uint256 totalAmount) external',
   'function approveRun(string runId, bytes checkerSig) external',
@@ -39,27 +36,44 @@ const registryAbi = parseAbi([
   'event RunExecuted(string indexed runId, uint256 pulled, bytes32 merkleRoot)',
 ])
 
-// General-purpose read client (balance queries, vaultOf, etc.)
-const pub = createPublicClient({ chain: arcTestnet, transport: http() })
+// General-purpose read client (balance queries, vaultOf, etc.).
+// batch: concurrent reads are sent as one JSON-RPC request.
+const pub = createPublicClient({ chain: arcTestnet, transport: http(undefined, { batch: true }) })
 
-// Dedicated receipt-polling client with a long timeout.
-// Keeping it separate means a gas-price timeout never cancels an in-flight receipt wait.
+// Dedicated receipt-polling client with a long timeout. Arc finalises in under
+// a second, so poll every 500ms instead of viem's 4s default.
+// Kept separate so a short read timeout never cancels an in-flight receipt wait.
 const receiptClient = createPublicClient({
   chain: arcTestnet,
   transport: http(undefined, { timeout: 120_000 }),
+  pollingInterval: 500,
 })
 
-// Fetch gas price with a short timeout + one retry so a slow RPC
-// never blocks tx submission. Falls back to a safe static value.
-async function arcGasPrice(): Promise<bigint> {
-  for (let i = 0; i < 2; i++) {
-    try {
-      const c = createPublicClient({ chain: arcTestnet, transport: http(undefined, { timeout: 5_000 }) })
-      const gp = await c.getGasPrice()
-      return (gp * 120n) / 100n   // +20% headroom
-    } catch { /* retry once */ }
-  }
-  return 30_000_000_000n   // 30 gwei static fallback
+// Short-timeout client for gas price only: a slow RPC must not stall the wallet prompt.
+const gasClient = createPublicClient({
+  chain: arcTestnet,
+  transport: http(undefined, { timeout: 3_000 }),
+})
+
+const GAS_PRICE_FALLBACK = 30_000_000_000n   // 30 gwei static fallback
+const GAS_PRICE_TTL_MS = 15_000
+let gasCache: { value: bigint; at: number } | null = null
+let gasInflight: Promise<bigint> | null = null
+
+// Cached for 15s and de-duplicated, so several writes in a row (approve then
+// fund) and the prefetch on wallet connect share one RPC round trip.
+export function arcGasPrice(): Promise<bigint> {
+  if (gasCache && Date.now() - gasCache.at < GAS_PRICE_TTL_MS) return Promise.resolve(gasCache.value)
+  if (gasInflight) return gasInflight
+  gasInflight = gasClient.getGasPrice()
+    .then((gp) => {
+      const value = (gp * 120n) / 100n   // +20% headroom
+      gasCache = { value, at: Date.now() }
+      return value
+    })
+    .catch(() => GAS_PRICE_FALLBACK)
+    .finally(() => { gasInflight = null })
+  return gasInflight
 }
 
 // Estimate gas for a contract call and add 30% headroom.
@@ -274,24 +288,43 @@ export class ArcSettlement implements Settlement {
     return { txHash: hash }
   }
 
-  // Scan OrgCreated events to find all orgs owned by a given address.
-  // Used to restore org state when a user connects a different wallet or a new browser.
+  // Find orgs this address created, to restore state on a new browser or wallet.
+  // Reads the owner's recent createOrg transactions from the explorer index
+  // (one fast request) instead of scanning chain logs from block 0: the chain is
+  // tens of millions of blocks deep and orgId is an indexed string in the event,
+  // so the log only holds its hash, not the readable id.
   async getOrgsForAddress(ownerAddress: string): Promise<Array<{ orgId: string; vaultAddress: string }>> {
     if (!ORG_FACTORY) return []
     try {
-      const logs = await pub.getLogs({
-        address: ORG_FACTORY,
-        event: orgFactoryEventsAbi[0],
-        fromBlock: 0n,
-        toBlock: 'latest',
-      })
-      const results: Array<{ orgId: string; vaultAddress: string }> = []
-      for (const log of logs) {
-        const args = log.args as { orgId?: string; owner?: string; vault?: string }
-        if (args.owner?.toLowerCase() === ownerAddress.toLowerCase() && args.orgId && args.vault) {
-          results.push({ orgId: args.orgId, vaultAddress: args.vault })
-        }
+      const url = `${explorerApiBase(CHAIN_ID)}/addresses/${ownerAddress}/transactions?filter=from`
+      const res = await fetch(url, { signal: AbortSignal.timeout(6_000) })
+      if (!res.ok) return []
+      const data = await res.json() as {
+        items?: Array<{
+          to?: { hash?: string } | null
+          method?: string | null
+          status?: string | null
+          decoded_input?: { parameters?: Array<{ name: string; value: string }> } | null
+        }>
       }
+      const orgIds: string[] = []
+      for (const tx of data.items ?? []) {
+        if (tx.to?.hash?.toLowerCase() !== ORG_FACTORY.toLowerCase()) continue
+        if (tx.method !== 'createOrg' || tx.status !== 'ok') continue
+        const id = tx.decoded_input?.parameters?.find((p) => p.name === 'orgId')?.value
+        if (id && !orgIds.includes(id)) orgIds.push(id)
+      }
+      const vaults = await Promise.all(
+        orgIds.map((orgId) =>
+          pub.readContract({ address: ORG_FACTORY, abi: orgFactoryAbi, functionName: 'vaultOf', args: [orgId] })
+            .catch(() => null),
+        ),
+      )
+      const results: Array<{ orgId: string; vaultAddress: string }> = []
+      orgIds.forEach((orgId, i) => {
+        const vault = vaults[i]
+        if (vault && vault !== '0x0000000000000000000000000000000000000000') results.push({ orgId, vaultAddress: vault })
+      })
       return results
     } catch { return [] }
   }

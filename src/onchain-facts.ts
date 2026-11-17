@@ -21,6 +21,12 @@ const EXPLORER_BASE: Record<number, string> = {
   [ARC_TESTNET_CHAIN_ID]: 'https://explorer.testnet.arc.io',
 }
 
+// Blockscout REST API (indexed history, much faster than scanning logs over RPC)
+export function explorerApiBase(chainId: number): string {
+  const base = EXPLORER_BASE[chainId] ?? 'https://explorer.testnet.arc.io'
+  return `${base}/api/v2`
+}
+
 export function buildTxExplorerUrl(chainId: number, txHash: string): string {
   const base = EXPLORER_BASE[chainId] ?? 'https://explorer.testnet.arc.io'
   return `${base}/tx/${txHash}`

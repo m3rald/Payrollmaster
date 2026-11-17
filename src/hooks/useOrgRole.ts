@@ -13,7 +13,8 @@ const roleAbi = parseAbi([
   'function checkerOf(string orgId) external view returns (address)',
 ])
 
-const pub = createPublicClient({ chain: arcTestnet, transport: http() })
+// batch: the three role reads go out as a single JSON-RPC request
+const pub = createPublicClient({ chain: arcTestnet, transport: http(undefined, { batch: true }) })
 
 export function useOrgRole(orgId: string | null | undefined): OrgRole {
   const { address } = useAccount()

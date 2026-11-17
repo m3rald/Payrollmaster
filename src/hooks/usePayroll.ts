@@ -9,7 +9,7 @@ import {
 import { buildMerkleRoot } from '../lib/merkle'
 import { encryptAmount, viewTag, destCommitment, generateOrgSecret } from '../lib/crypto'
 import { generateId, parseUsdcInput } from '../lib/utils'
-import { arcSettlement } from '../settlement/arc'
+import { arcSettlement, arcGasPrice } from '../settlement/arc'
 import type { ExecuteRunResult } from '../settlement/types'
 
 export function usePayroll() {
@@ -30,11 +30,13 @@ export function usePayroll() {
   // Wire wallet client into the settlement adapter whenever it changes
   useEffect(() => { if (walletClient) arcSettlement.setWalletClient(walletClient) }, [walletClient])
 
-  // When a wallet connects, scan OrgCreated events on-chain and import any
-  // orgs that belong to this address but aren't in localStorage yet.
+  // When a wallet connects, look up the orgs it created (via the explorer index)
+  // and import any that aren't in localStorage yet.
   // This restores state across wallets and browsers without requiring a private key.
   useEffect(() => {
     if (!address) return
+    // Warm the gas price cache so the first transaction prompt opens instantly.
+    void arcGasPrice()
     arcSettlement.getOrgsForAddress(address).then(onchainOrgs => {
       let changed = false
       const local = loadOrgs()
